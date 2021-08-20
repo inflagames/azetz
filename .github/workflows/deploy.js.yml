@@ -1,0 +1,30 @@
+name: Azetz actions for deploy
+
+on:
+  push:
+    branches: [ eduin ]
+  pull_request:
+    branches: [ eduin ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Cache project node-modules
+        uses: actions/cache@v2
+        with:
+          path: 'node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: git remote set-url https://${{ GITHUB_TOKEN }}@github.com/inflagames/azetz
+      - run: npm run buils
+      - run: mv ./dist ./docs

@@ -1,4 +1,4 @@
-name: Azetz jobs
+name: Azetz actions for dev
 
 on: [push, pull_request]
 
