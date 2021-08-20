@@ -26,6 +26,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/inflagames/azetz
+      - run: git config --global user.email "eduinlight@gmail.com"
+      - run: git config --global user.name "Eduin Garcia Cordero"
       - run: npm run build
       - run: mv ./dist ./docs
       - run: git add ./docs
