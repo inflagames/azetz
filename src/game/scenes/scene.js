@@ -21,7 +21,6 @@ export default class Scene {
      * @param context {CanvasRenderingContext2D}
      */
     cleanCanvas(context) {
-        context.beginPath();
         context.rect(0, 0, 400, 400);
         context.fillStyle = this.backgroundColor;
         context.fill();
