@@ -1,9 +1,13 @@
-name: Azetz jobs
+name: Azetz actions for deploy
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ eduin ]
+  pull_request:
+    branches: [ eduin ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,13 +25,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-
-  test:
-    needs: [build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
-    steps:
-      - run: npm run lint
+      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/inflagames/azetz
+      - run: git config --global user.email "eduinlight@gmail.com"
+      - run: git config --global user.name "Eduin Garcia Cordero"
       - run: npm run build
+      - run: mv ./dist ./docs
+      - run: git add --all
+      - run: git commit -m "Docs created"
