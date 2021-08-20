@@ -6,9 +6,9 @@ export default class Navigator {
    * @param scene {number}
    */
   constructor(scene) {
+    this.sceneClasses = new Map();
     this.sceneClasses.set(SCENE_MENU, Menu);
     this.scenesInstances = new Map();
-    this.sceneClasses = new Map();
     /** @member {Scene} */
     this.currentScene = null;
     this.navigate(scene);

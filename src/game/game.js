@@ -12,17 +12,14 @@ const intervalPerSecond = 1000 / FPS;
 
 export default class Game {
   constructor() {
+    /** @member {Navigator} */
     this.navigatorRoot = new Navigator(SCENE_MENU);
+    /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
+    /** @member {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext("2d");
     this.loopStatus = STOP;
     this.lastTime = 0;
-    /** @member {HTMLCanvasElement} */
-    this.canvas = null;
-    /** @member {CanvasRenderingContext2D} */
-    this.context = null;
-    /** @member {Navigator} */
-    this.navigatorRoot = null;
   }
 
   /**
