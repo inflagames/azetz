@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/inflagames/azetz
-      - run: npm run buils
+      - run: npm run build
       - run: mv ./dist ./docs
       - run: git add ./docs
       - run: git commit -m "Docs created"
