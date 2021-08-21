@@ -1,4 +1,4 @@
-import {EVENT_CLICK, SCENE_GAME, SCENE_MENU} from "./game";
+import { EVENT_CLICK, SCENE_GAME, SCENE_MENU } from "./game";
 import Menu from "./scenes/menu";
 import Play from "./scenes/play";
 import EventEmitter from "events";
@@ -40,7 +40,10 @@ export default class Navigator {
     if (this.scenesInstances.has(scene)) {
       this.currentScene = this.scenesInstances.get(scene);
     } else if (this.sceneClasses.has(scene)) {
-      this.scenesInstances.set(scene, new (this.sceneClasses.get(scene))(this, new EventEmitter()));
+      this.scenesInstances.set(
+        scene,
+        new (this.sceneClasses.get(scene))(this, new EventEmitter())
+      );
       this.currentScene = this.scenesInstances.get(scene);
     }
   }

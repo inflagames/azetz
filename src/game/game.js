@@ -63,7 +63,10 @@ export default class Game {
    */
   loop(currentTime) {
     if (this.loopStatus === RUNNING || this.loopStatus === RUNNING) {
-      if (this.loopStatus === RUNNING && intervalPerSecond <= currentTime - this.lastTime) {
+      if (
+        this.loopStatus === RUNNING &&
+        intervalPerSecond <= currentTime - this.lastTime
+      ) {
         this.lastTime = currentTime;
 
         this.drawScreen();
