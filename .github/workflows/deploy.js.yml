@@ -30,6 +30,6 @@ jobs:
       - run: git config --global user.name "Eduin Garcia Cordero"
       - run: npm run build
       - run: mv ./dist ./docs
-      - run: git add --all
+      - run: git add ./docs
       - run: git commit -m "Docs created"
       - run: git push ---force-with-lease origin master
