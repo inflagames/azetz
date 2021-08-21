@@ -33,6 +33,6 @@ jobs:
       - run: git rebase origin/master
       - run: npm run build
       - run: mv ./dist ./docs
-      - run: git add ./docs
+      - run: git add --all
       - run: git commit -m "Docs created"
       - run: git push origin master
