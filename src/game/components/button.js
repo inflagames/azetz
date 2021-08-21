@@ -1,20 +1,27 @@
-export default class Button {
+import BaseObject from "./base-object";
+import {EVENT_CLICK} from "../game";
+
+export default class Button extends BaseObject{
   /**
    * @param x {number}
    * @param y {number}
    * @param width {number}
    * @param height {number}
    * @param text {string}
+   * @param eventEmitter {EventEmitter}
    */
-  constructor(x, y, width, height, text) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+  constructor(eventEmitter, x, y, width, height, text) {
+    super(eventEmitter, x, y, width, height);
     this.text = text;
     this.textSize = 10;
     this.backgroundColor = "#000";
     this.textColor = "#fff";
+
+    this.listenerEvent(EVENT_CLICK, this.clickEvent.bind(this));
+  }
+
+  clickEvent() {
+    console.log('button click');
   }
 
   /**
