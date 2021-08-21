@@ -1,6 +1,9 @@
 name: Azetz actions for deploy
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     types:
       - closed
