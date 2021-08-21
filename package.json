@@ -1,12 +1,11 @@
 {
-  "name": "js13kgamesboilerplate",
+  "name": "azetz",
   "version": "0.0.1",
-  "description": "js13kgames Boilerplate",
+  "description": "Azetz game",
   "keywords": [
     "js13kgames",
     "gamedev",
-    "game",
-    "kontra.js"
+    "game"
   ],
   "license": "",
   "author": "wil92",
