@@ -25,9 +25,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
+      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.GITHUB_REPOSITORY }}
       - run: git config --global user.email "eduinlight@gmail.com"
       - run: git config --global user.name "Eduin Garcia Cordero"
+      - run: git fetch --all
       - run: git checkout gh-pages
       - run: git rebase origin/master
       - run: npm run build
