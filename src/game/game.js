@@ -1,5 +1,5 @@
-import EventEmitter from "events";
 import Navigator from "./navigator";
+import Observable from "./utils/observable";
 
 export const RUNNING = 1;
 export const PAUSE = 2;
@@ -24,8 +24,8 @@ export default class Game {
     this.canvas.addEventListener("mousedown", (e) =>
       this.clickEvent(e, EVENT_MOUSEDOWN)
     );
-    /** @member {EventEmitter} */
-    this.eventEmitter = new EventEmitter();
+    /** @member {Observable} */
+    this.eventEmitter = new Observable();
     /** @member {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext("2d");
     /** @member {Navigator} */
@@ -40,9 +40,12 @@ export default class Game {
    */
   clickEvent(event, type) {
     const rect = this.canvas.getBoundingClientRect();
-    this.eventEmitter.emit(type, {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
+    this.eventEmitter.emit({
+      event: type,
+      position: {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      },
     });
   }
 
