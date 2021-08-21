@@ -25,11 +25,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/inflagames/azetz
-      - run: git config --global user.email "eduinlight@gmail.com"
-      - run: git config --global user.name "Eduin Garcia Cordero"
+      - run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
+      - run: git config --global user.email "GITHUB_ACTOR@bots.github.com"
+      - run: git config --global user.name "${GITHUB_ACTOR}"
       - run: npm run build
       - run: mv ./dist ./docs
       - run: git add ./docs
       - run: git commit -m "Docs created"
-      - run: git push --force-with-lease origin master
+      - run: git push origin master
