@@ -29,7 +29,8 @@ jobs:
       - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
       - run: git config --global user.email "eduinlight@gmail.com"
       - run: git config --global user.name "Eduin Garcia Cordero"
-      - run: git branch -D gh-pages || echo "BRANCH DELETED"
+      - run: git push origin --delete gh-pages || echo "BRANCH REMOTE DOES NOT EXIST"
+      - run: git branch -D gh-pages || echo "BRANCH LOCAL DOES NOT EXIST"
       - run: git checkout -b gh-pages
       - run: npm run build
       - run: mv ./dist ./docs
