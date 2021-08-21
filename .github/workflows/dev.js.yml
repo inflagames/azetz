@@ -1,6 +1,6 @@
 name: Azetz actions for dev
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
