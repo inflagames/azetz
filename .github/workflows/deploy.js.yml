@@ -1,10 +1,11 @@
 name: Azetz actions for deploy
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    types:
+      - closed
+    branches:
+      - master
 
 jobs:
   deploy:
