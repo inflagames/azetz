@@ -19,13 +19,17 @@ export default class Observable {
   }
 
   /**
-   * @param func {function}
+   * @param functions {function}
    * @return {Observable}
    */
-  pipe(func) {
-    const stream = new Observable();
-    this.subscriptions.push((data) => func(data, stream));
-    return stream;
+  pipe(...functions) {
+    let lastSteam = this;
+    for (let func of functions) {
+      const stream = new Observable();
+      lastSteam.on((data) => func(data, stream));
+      lastSteam = stream;
+    }
+    return lastSteam;
   }
 
   /**
@@ -45,5 +49,15 @@ export function filterObservable(func) {
     if (func(data)) {
       observable.emit(data);
     }
+  }
+}
+
+/**
+ * The value of the observable can be mapped and returned with transformations
+ * @param func {function}
+ */
+export function mapObservable(func) {
+  return (data, /** @param {Observable} */ observable) => {
+    observable.emit(func(data));
   }
 }
