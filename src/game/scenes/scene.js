@@ -1,10 +1,13 @@
-export default class Scene {
+import BaseObject from "../components/base-object";
+
+export default class Scene extends BaseObject {
   /**
    * @param navigator {Navigator}
+   * @param eventEmitter {EventEmitter}
    */
-  constructor(navigator) {
+  constructor(navigator, eventEmitter) {
+    super(eventEmitter)
     this.navigator = navigator;
-    this.navigator = null;
     this.backgroundColor = "#f00";
   }
 

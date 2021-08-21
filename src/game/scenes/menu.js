@@ -2,9 +2,13 @@ import Scene from "./scene";
 import Button from "../components/button";
 
 export default class Menu extends Scene {
-  constructor() {
-    super();
-    this.button = new Button(5, 7, 100, 30, "BUTTON");
+  /**
+   * @param navigator {Navigator}
+   * @param eventEmitter {EventEmitter}
+   */
+  constructor(navigator, eventEmitter) {
+    super(navigator, eventEmitter);
+    this.button = new Button(eventEmitter, 5, 7, 100, 30, "BUTTON");
   }
 
   /**
