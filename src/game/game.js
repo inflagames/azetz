@@ -1,4 +1,4 @@
-import EventEmitter from 'events'
+import EventEmitter from "events";
 import Navigator from "./navigator";
 
 export const RUNNING = 1;
@@ -18,8 +18,12 @@ export default class Game {
   constructor() {
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
-    this.canvas.addEventListener('click', (e) => this.clickEvent(e, EVENT_CLICK));
-    this.canvas.addEventListener('mousedown', (e) => this.clickEvent(e, EVENT_MOUSEDOWN));
+    this.canvas.addEventListener("click", (e) =>
+      this.clickEvent(e, EVENT_CLICK)
+    );
+    this.canvas.addEventListener("mousedown", (e) =>
+      this.clickEvent(e, EVENT_MOUSEDOWN)
+    );
     /** @member {EventEmitter} */
     this.eventEmitter = new EventEmitter();
     /** @member {CanvasRenderingContext2D} */
@@ -38,7 +42,7 @@ export default class Game {
     const rect = this.canvas.getBoundingClientRect();
     this.eventEmitter.emit(type, {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      y: event.clientY - rect.top,
     });
   }
 
