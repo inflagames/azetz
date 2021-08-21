@@ -1,10 +1,11 @@
 name: Azetz actions for deploy
 
 on:
-  push:
-    branches: [ eduin ]
   pull_request:
-    branches: [ eduin ]
+    types:
+      - closed
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -25,10 +26,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/inflagames/azetz
+      - run: git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
       - run: git config --global user.email "eduinlight@gmail.com"
       - run: git config --global user.name "Eduin Garcia Cordero"
+      - run: git fetch --all
+      - run: git checkout gh-pages
+      - run: git rebase origin/master
       - run: npm run build
       - run: mv ./dist ./docs
       - run: git add --all
       - run: git commit -m "Docs created"
+      - run: git push origin gh-pages
