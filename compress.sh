@@ -17,14 +17,13 @@ zip -r -9 $GAME_ZIP_FILE_NAME dist
 
 FILE_SIZE=`du -k "$GAME_ZIP_FILE_NAME" | cut -f1`
 
-echo "$GAME_ZIP_FILE_NAME is of ${FILE_SIZE}KB"
-
 if (( $FILE_SIZE > 13 )); then
   echo "-----------------------------------------"
-  echo "| FILE NOT VALID FOR JS13KGAMES CONTEST |"
+  echo "| FILE NOT VALID FOR JS13KGAMES CONTEST (${FILE_SIZE}KB) |"
   echo "-----------------------------------------"
+  exit 27
 else
   echo "----------------------------"
-  echo "| FILE UNDER 13KB, GAME ON |"
+  echo "| ${FILE_SIZE}KB FILE UNDER 13KB, GAME ON |"
   echo "----------------------------"
 fi
