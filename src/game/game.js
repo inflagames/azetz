@@ -62,20 +62,16 @@ export default class Game {
    * @param currentTime {number}
    */
   loop(currentTime) {
-    switch (this.loopStatus) {
-      case STOP:
-        break;
-      case RUNNING:
-        if (intervalPerSecond <= currentTime - this.lastTime) {
-          this.lastTime = currentTime;
+    if (this.loopStatus === RUNNING || this.loopStatus === RUNNING) {
+      if (this.loopStatus === RUNNING && intervalPerSecond <= currentTime - this.lastTime) {
+        this.lastTime = currentTime;
 
-          this.drawScreen();
-        }
-        break;
-      case PAUSE:
-        requestAnimationFrame(this.loop.bind(this));
-        break;
+        this.drawScreen();
+      }
+
+      requestAnimationFrame(this.loop.bind(this));
     }
+    // the else here will end the loop
   }
 
   /**
