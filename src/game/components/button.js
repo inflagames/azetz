@@ -16,12 +16,6 @@ export default class Button extends BaseObject{
     this.textSize = 10;
     this.backgroundColor = "#000";
     this.textColor = "#fff";
-
-    this.listenerEvent(EVENT_CLICK, this.clickEvent.bind(this));
-  }
-
-  clickEvent() {
-    console.log('button click');
   }
 
   /**

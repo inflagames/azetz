@@ -7,6 +7,7 @@ export default class BaseObject {
    * @param height {number}
    */
   constructor(eventEmitter, x= 0, y= 0, width= 0, height= 0) {
+    /** @member {EventEmitter} */
     this.eventEmitter = eventEmitter;
     this.x = x;
     this.y = y;
