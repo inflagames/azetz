@@ -5,7 +5,7 @@ import {EVENT_CLICK, SCENE_GAME} from "../game";
 export default class Menu extends Scene {
   /**
    * @param navigator {Navigator}
-   * @param eventEmitter {EventEmitter}
+   * @param eventEmitter {Observable}
    */
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);

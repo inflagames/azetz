@@ -1,12 +1,12 @@
-import { EVENT_CLICK, SCENE_GAME, SCENE_MENU } from "./game";
+import { SCENE_GAME, SCENE_MENU } from "./game";
 import Menu from "./scenes/menu";
 import Play from "./scenes/play";
-import EventEmitter from "events";
+import Observable from "./utils/observable";
 
 export default class Navigator {
   /**
    * @param scene {number}
-   * @param eventEmitter {EventEmitter}
+   * @param eventEmitter {Observable}
    */
   constructor(scene, eventEmitter) {
     this.sceneClasses = new Map();
@@ -15,21 +15,12 @@ export default class Navigator {
     this.scenesInstances = new Map();
     /** @member {Scene} */
     this.currentScene = null;
-    /** @member {EventEmitter} */
-    this.subscribeToEvent(eventEmitter, EVENT_CLICK);
-    this.navigate(scene);
-  }
-
-  /**
-   * @param eventEmitter {EventEmitter}
-   * @param event {string}
-   */
-  subscribeToEvent(eventEmitter, event) {
-    eventEmitter.on(event, (data) => {
-      if (this.currentScene) {
-        this.currentScene.eventEmitter.emit(event, data);
-      }
+    eventEmitter.on((data) => {
+      this.currentScene.eventEmitter.emit(data);
     });
+
+    // initial navigation
+    this.navigate(scene);
   }
 
   /**
@@ -42,7 +33,7 @@ export default class Navigator {
     } else if (this.sceneClasses.has(scene)) {
       this.scenesInstances.set(
         scene,
-        new (this.sceneClasses.get(scene))(this, new EventEmitter())
+        new (this.sceneClasses.get(scene))(this, new Observable())
       );
       this.currentScene = this.scenesInstances.get(scene);
     }

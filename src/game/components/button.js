@@ -1,5 +1,4 @@
 import BaseObject from "./base-object";
-import {EVENT_CLICK} from "../game";
 
 export default class Button extends BaseObject{
   /**
@@ -8,7 +7,7 @@ export default class Button extends BaseObject{
    * @param width {number}
    * @param height {number}
    * @param text {string}
-   * @param eventEmitter {EventEmitter}
+   * @param eventEmitter {Observable}
    */
   constructor(eventEmitter, x, y, width, height, text) {
     super(eventEmitter, x, y, width, height);

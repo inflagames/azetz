@@ -3,7 +3,7 @@ import BaseObject from "../components/base-object";
 export default class Scene extends BaseObject {
   /**
    * @param navigator {Navigator}
-   * @param eventEmitter {EventEmitter}
+   * @param eventEmitter {Observable}
    */
   constructor(navigator, eventEmitter) {
     super(eventEmitter)
