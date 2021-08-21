@@ -2,9 +2,9 @@ name: Azetz actions for deploy
 
 on:
   push:
-    branches: [ eduin ]
+    branches: [ master ]
   pull_request:
-    branches: [ eduin ]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -32,3 +32,4 @@ jobs:
       - run: mv ./dist ./docs
       - run: git add --all
       - run: git commit -m "Docs created"
+      - run: git push ---force-with-lease origin master
