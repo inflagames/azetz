@@ -33,7 +33,7 @@ export default class Game {
     /** @member {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext("2d");
     /** @member {Navigator} */
-    this.navigatorRoot = new Navigator(SCENE_MENU, this.eventEmitter);
+    this.navigatorRoot = new Navigator(SCENE_GAME, this.eventEmitter);
     this.loopStatus = STOP;
     this.lastTime = 0;
     this.width = this.canvas.width;
