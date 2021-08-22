@@ -28,7 +28,7 @@ export default class SceneMenu extends Scene {
       this.navigator.navigate(SCENE_FRACTAL)
     );
     this.ship = new Ship(eventEmitter, 200, 200, 30, 35);
-    this.score = new Score(eventEmitter, 395, 5, 0);
+    this.score = new Score(eventEmitter, 395, 5);
   }
 
   /**
