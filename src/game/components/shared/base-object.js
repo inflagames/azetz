@@ -1,4 +1,4 @@
-import { filterObservable } from "../utils/observable";
+import { filterObservable } from "../../utils/observable";
 
 export default class BaseObject {
   /**

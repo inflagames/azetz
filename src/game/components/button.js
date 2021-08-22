@@ -1,4 +1,4 @@
-import BaseObject from "./base-object";
+import BaseObject from "./shared/base-object";
 
 export default class Button extends BaseObject {
   /**

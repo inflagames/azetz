@@ -1,20 +1,19 @@
-import Scene from "./scene";
+import Scene from "./shared/scene";
 import Button from "../components/button";
-import { EVENT_CLICK, SCENE_GAME } from "../game";
-import Ship from "./ship";
+import { EVENT_CLICK, SCENE_MENU } from "../game";
 
-export default class Menu extends Scene {
+export default class ScenePlay extends Scene {
   /**
    * @param navigator {Navigator}
    * @param eventEmitter {Observable}
    */
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
-    this.button = new Button(eventEmitter, 5, 7, 100, 30, "PLAY");
+    this.backgroundColor = "#0f0";
+    this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
     this.button.listenerEvent(EVENT_CLICK, () =>
-      this.navigator.navigate(SCENE_GAME)
+      this.navigator.navigate(SCENE_MENU)
     );
-    this.ship = new Ship(eventEmitter, 200, 200, 30, 35);
   }
 
   /**
@@ -25,6 +24,5 @@ export default class Menu extends Scene {
 
     // toDo guille 20.08.21: render menu here
     this.button.render(context);
-    this.ship.render(context);
   }
 }

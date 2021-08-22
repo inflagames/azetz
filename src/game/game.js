@@ -10,9 +10,13 @@ export const EVENT_MOUSEDOWN = "1";
 
 export const SCENE_MENU = 0;
 export const SCENE_GAME = 1; // toDo guille 20.08.21:
+export const SCENE_FRACTAL = 2;
 
 export const FPS = 30;
 const intervalPerSecond = 1000 / FPS;
+
+// @member {Game}
+let gameInstance = null;
 
 export default class Game {
   constructor() {
@@ -32,6 +36,8 @@ export default class Game {
     this.navigatorRoot = new Navigator(SCENE_MENU, this.eventEmitter);
     this.loopStatus = STOP;
     this.lastTime = 0;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
   }
 
   /**
@@ -50,14 +56,22 @@ export default class Game {
   }
 
   /**
-   * Initialize game
+   * Get game instance
    * @returns {Game}
    */
-  static init() {
-    const game = new Game();
-    game.loopStatus = RUNNING;
-    requestAnimationFrame(game.loop.bind(game));
-    return game;
+  static getInstance() {
+    if (!gameInstance) {
+      gameInstance = new Game();
+    }
+    return gameInstance;
+  }
+
+  /**
+   * Initialize game
+   */
+  init() {
+    this.loopStatus = RUNNING;
+    requestAnimationFrame(this.loop.bind(this));
   }
 
   /**
@@ -65,7 +79,7 @@ export default class Game {
    * @param currentTime {number}
    */
   loop(currentTime) {
-    if (this.loopStatus === RUNNING || this.loopStatus === RUNNING) {
+    if (this.loopStatus === RUNNING) {
       if (
         this.loopStatus === RUNNING &&
         intervalPerSecond <= currentTime - this.lastTime

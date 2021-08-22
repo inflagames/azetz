@@ -1,4 +1,4 @@
-import BaseObject from "../components/base-object";
+import BaseObject from "../../components/shared/base-object";
 
 export default class Scene extends BaseObject {
   /**

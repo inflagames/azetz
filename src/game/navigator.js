@@ -1,6 +1,7 @@
-import { SCENE_GAME, SCENE_MENU } from "./game";
-import Menu from "./scenes/menu";
-import Play from "./scenes/play";
+import { SCENE_FRACTAL, SCENE_GAME, SCENE_MENU } from "./game";
+import SceneFractal from "./scenes/fractals.scene";
+import Menu from "./scenes/menu.scene";
+import ScenePlay from "./scenes/play.scene";
 import Observable from "./utils/observable";
 
 export default class Navigator {
@@ -11,7 +12,8 @@ export default class Navigator {
   constructor(scene, eventEmitter) {
     this.sceneClasses = new Map();
     this.sceneClasses.set(SCENE_MENU, Menu);
-    this.sceneClasses.set(SCENE_GAME, Play);
+    this.sceneClasses.set(SCENE_GAME, ScenePlay);
+    this.sceneClasses.set(SCENE_FRACTAL, SceneFractal);
     this.scenesInstances = new Map();
     /** @member {Scene} */
     this.currentScene = null;
