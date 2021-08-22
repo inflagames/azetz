@@ -27,13 +27,15 @@ export default class Button extends BaseObject {
     context.fill();
 
     context.beginPath();
-    const textWidth = context.measureText(this.text).width;
     context.font = `${this.textSize}px Arial`;
+    let metrics = context.measureText(this.text);
+    const textWidth = metrics.width;
+    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     context.fillStyle = this.textColor;
     context.fillText(
       this.text,
-      (this.x + this.width) / 2 - textWidth / 2,
-      this.y + this.height / 2 + this.textSize / 2
+      this.x + this.width / 2 - textWidth / 2,
+      this.y + this.height / 2 + textHeight / 2
     );
   }
 }
