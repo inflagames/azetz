@@ -80,6 +80,7 @@ export default class Game {
    */
   loop(currentTime) {
     if (this.loopStatus === RUNNING) {
+      this.currentTime = currentTime;
       if (
         this.loopStatus === RUNNING &&
         intervalPerSecond <= currentTime - this.lastTime
