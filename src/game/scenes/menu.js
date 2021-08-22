@@ -1,6 +1,6 @@
 import Scene from "./scene";
 import Button from "../components/button";
-import {EVENT_CLICK, SCENE_GAME} from "../game";
+import { EVENT_CLICK, SCENE_GAME } from "../game";
 import Ship from "./ship";
 
 export default class Menu extends Scene {
@@ -11,7 +11,9 @@ export default class Menu extends Scene {
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
     this.button = new Button(eventEmitter, 5, 7, 100, 30, "PLAY");
-    this.button.listenerEvent(EVENT_CLICK, () => this.navigator.navigate(SCENE_GAME));
+    this.button.listenerEvent(EVENT_CLICK, () =>
+      this.navigator.navigate(SCENE_GAME)
+    );
     this.ship = new Ship(eventEmitter, 200, 200, 30, 35);
   }
 

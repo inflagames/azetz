@@ -1,6 +1,6 @@
 import BaseObject from "./base-object";
 
-export default class Button extends BaseObject{
+export default class Button extends BaseObject {
   /**
    * @param x {number}
    * @param y {number}

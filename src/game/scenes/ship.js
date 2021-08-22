@@ -12,23 +12,35 @@ export default class Ship extends BaseObject {
     super(eventEmitter, x, y, width, height);
     /** @member {number} */
     this.rotation = 90;
-    this.backgroundColor = "#00f"
+    this.backgroundColor = "#00f";
   }
 
   render(context) {
-    const rotation = this.rotation * Math.PI / 180;
+    const rotation = (this.rotation * Math.PI) / 180;
 
     // render ship body
-    const leftSide = this.getPointByVectorAndRotation({x: this.width / 2, y: 0}, {
-      x: this.x,
-      y: this.y
-    }, rotation + Math.PI / 2);
-    const rightSide = this.getPointByVectorAndRotation({x: this.width / 2, y: 0}, {
-      x: this.x,
-      y: this.y
-    }, rotation - Math.PI / 2);
+    const leftSide = this.getPointByVectorAndRotation(
+      { x: this.width / 2, y: 0 },
+      {
+        x: this.x,
+        y: this.y,
+      },
+      rotation + Math.PI / 2
+    );
+    const rightSide = this.getPointByVectorAndRotation(
+      { x: this.width / 2, y: 0 },
+      {
+        x: this.x,
+        y: this.y,
+      },
+      rotation - Math.PI / 2
+    );
     // noinspection JSSuspiciousNameCombination
-    const frontSide = this.getPointByVectorAndRotation({x: this.height, y: 0}, {x: this.x, y: this.y}, rotation);
+    const frontSide = this.getPointByVectorAndRotation(
+      { x: this.height, y: 0 },
+      { x: this.x, y: this.y },
+      rotation
+    );
     context.beginPath();
     context.moveTo(leftSide.x, leftSide.y);
     context.lineTo(frontSide.x, frontSide.y);
@@ -49,7 +61,7 @@ export default class Ship extends BaseObject {
    */
   getPointByVectorAndRotation(vector, pivot, phi) {
     const result = this.rotateVector(vector, phi);
-    return {x: pivot.x + result.x, y: pivot.y - result.y};
+    return { x: pivot.x + result.x, y: pivot.y - result.y };
   }
 
   /**
@@ -60,7 +72,7 @@ export default class Ship extends BaseObject {
   rotateVector(vector, phi) {
     return {
       x: vector.x * Math.cos(phi) - vector.y * Math.sin(phi),
-      y: vector.x * Math.sin(phi) + vector.y * Math.cos(phi)
-    }
+      y: vector.x * Math.sin(phi) + vector.y * Math.cos(phi),
+    };
   }
 }
