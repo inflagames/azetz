@@ -1,5 +1,6 @@
 import BaseObject from "./shared/base-object";
 import Game from "../game";
+import Data from "../utils/data";
 
 const intervalPerSecond = 1000;
 
@@ -10,9 +11,10 @@ export default class Score extends BaseObject {
    * @param y {number} corner coordinates
    * @param score {number}
    */
-  constructor(eventEmitter, x, y, score) {
+  constructor(eventEmitter, x, y) {
     super(eventEmitter, x, y);
-    this.score = score;
+    this.data = Data.getInstance();
+    this.score = this.data.getScore();
     this.textSize = 30;
     this.backgroundColor = "#000";
     this.textColor = "#fff";
@@ -52,6 +54,7 @@ export default class Score extends BaseObject {
     if (intervalPerSecond <= currentTime - this.lastTime) {
       this.lastTime = currentTime;
       this.score++;
+      this.data.saveScore(this.score);
     }
   }
 }
