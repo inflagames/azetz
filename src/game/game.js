@@ -9,6 +9,9 @@ export const EVENT_CLICK = "0";
 export const EVENT_MOUSEDOWN = "1";
 export const EVENT_MOUSEUP = "2";
 export const EVENT_MOUSEMOVE = "3";
+export const EVENT_TOUCHDOWN = "4";
+export const EVENT_TOUCHUP = "5";
+export const EVENT_TOUCHMOVE = "6";
 
 export const SCENE_MENU = 0;
 export const SCENE_GAME = 1; // toDo guille 20.08.21:
@@ -23,11 +26,27 @@ export default class Game {
   constructor() {
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
-    this.canvas.addEventListener("click", (e) => this.clickEvent(e, EVENT_CLICK));
-    this.canvas.addEventListener("mousedown", (e) => this.clickEvent(e, EVENT_MOUSEDOWN));
-    this.canvas.addEventListener("mouseup", (e) => this.clickEvent(e, EVENT_MOUSEUP));
-    this.canvas.addEventListener("mousemove", (e) => this.clickEvent(e, EVENT_MOUSEMOVE));
-    this.canvas.addEventListener("touchstart", (e) => this.touchEvent(e, EVENT_MOUSEUP));
+    this.canvas.addEventListener("click", (e) =>
+      this.clickEvent(e, EVENT_CLICK)
+    );
+    this.canvas.addEventListener("mousedown", (e) =>
+      this.clickEvent(e, EVENT_MOUSEDOWN)
+    );
+    this.canvas.addEventListener("mouseup", (e) =>
+      this.clickEvent(e, EVENT_MOUSEUP)
+    );
+    this.canvas.addEventListener("mousemove", (e) =>
+      this.clickEvent(e, EVENT_MOUSEMOVE)
+    );
+    this.canvas.addEventListener("touchstart", (e) =>
+      this.touchEvent(e, EVENT_TOUCHDOWN)
+    );
+    this.canvas.addEventListener("touchend", (e) =>
+      this.touchEvent(e, EVENT_TOUCHUP)
+    );
+    this.canvas.addEventListener("touchmove", (e) =>
+      this.touchEvent(e, EVENT_TOUCHMOVE)
+    );
     /** @member {Observable} */
     this.eventEmitter = new Observable();
     /** @member {CanvasRenderingContext2D} */
@@ -45,6 +64,10 @@ export default class Game {
    * @param type {string}
    */
   touchEvent(event, type) {
+    this.emitPositionEvent({
+      x: event.targetTouches[0].pageX,
+      y: event.targetTouches[0].pageY,
+    });
   }
 
   /**
@@ -52,12 +75,19 @@ export default class Game {
    * @param type {string}
    */
   clickEvent(event, type) {
+    this.emitPositionEvent({ x: event.clientX, y: event.clientY }, type);
+  }
+
+  /**
+   * @param position {{x: number, y: number}}
+   */
+  emitPositionEvent(position, type) {
     const rect = this.canvas.getBoundingClientRect();
     this.eventEmitter.emit({
       event: type,
       position: {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
+        x: position.x - rect.left,
+        y: position.y - rect.top,
       },
     });
   }
