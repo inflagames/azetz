@@ -1,7 +1,8 @@
 import Scene from "./shared/scene";
 import Button from "../components/button";
-import {EVENT_CLICK, SCENE_MENU} from "../game";
+import {EVENT_CLICK, EVENT_MOUSEDOWN, EVENT_MOUSEMOVE, EVENT_MOUSEUP, SCENE_MENU} from "../game";
 import Ship from "../components/ship";
+import TouchArea from "../components/touch-area";
 
 export default class ScenePlay extends Scene {
   /**
@@ -10,6 +11,10 @@ export default class ScenePlay extends Scene {
    */
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
+    this.x = 0;
+    this.y = 0;
+    this.width = 400;
+    this.height = 400;
     this.backgroundColor = "#0f0";
     this.backgroundColor2 = "#0ff";
     this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
@@ -17,7 +22,26 @@ export default class ScenePlay extends Scene {
       this.navigator.navigate(SCENE_MENU)
     );
     this.ship = new Ship(eventEmitter, 200, 380, 30, 35);
+    const touchArea = 60;
+    this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
+    this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, data => {
+      this.directionToFlight = data.position;
+      this.shipPressed = true;
+    });
+    this.listenerEvent(EVENT_MOUSEUP, () => {
+      this.shipPressed = false;
+    });
+    this.listenerEvent(EVENT_MOUSEMOVE, data => {
+      if (this.shipPressed) {
+        this.directionToFlight = data.position;
+        this.calculateShipRotation(data.position);
+      }
+    });
     this.timer = 0;
+  }
+
+  calculateShipRotation(position) {
+    this.ship.rotation = Math.atan2(380 - position.y, position.x - 200);
   }
 
   /**
@@ -29,6 +53,24 @@ export default class ScenePlay extends Scene {
     // toDo guille 20.08.21: render menu here
     this.button.render(context);
     this.ship.render(context);
+    this.shipTouchArea.render(context);
+
+    // draw ship flight line
+    this.drawFlightLine(context);
+  }
+
+  /**
+   * @param context {CanvasRenderingContext2D}
+   */
+  drawFlightLine(context) {
+    if (this.shipPressed) {
+      context.beginPath();
+      context.strokeStyle = "#f00";
+      context.lineWidth = 3;
+      context.moveTo(200, 380);
+      context.lineTo(this.directionToFlight.x, this.directionToFlight.y);
+      context.stroke();
+    }
   }
 
   cleanCanvas(context) {

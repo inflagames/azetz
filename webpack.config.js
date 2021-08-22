@@ -12,7 +12,6 @@ const port = process.env.PORT || 9000;
 module.exports = {
   context: path.join(__dirname, "src"),
   entry: ["./main.js", "./main.scss"],
-  watch: environment === "development",
   target: "web",
   mode: environment,
   devtool: environment === "development" ? "inline-source-map" : "source-map",
@@ -67,8 +66,9 @@ module.exports = {
   devServer: {
     contentBase: [path.join(__dirname, "src"), path.join(__dirname, "dist")],
     port: port,
+    host: '0.0.0.0',
     hot: true,
     inline: true,
-    liveReload: true,
+    liveReload: true
   },
 };
