@@ -1,6 +1,14 @@
 import Scene from "./shared/scene";
 import Button from "../components/button";
-import {EVENT_CLICK, EVENT_MOUSEDOWN, EVENT_MOUSEMOVE, EVENT_MOUSEUP, SCENE_MENU} from "../game";
+import {
+  EVENT_CLICK,
+  EVENT_MOUSEDOWN,
+  EVENT_MOUSEMOVE,
+  EVENT_MOUSEUP,
+  EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
+  EVENT_TOUCHUP,
+  SCENE_MENU
+} from "../game";
 import Ship from "../components/ship";
 import TouchArea from "../components/touch-area";
 
@@ -24,20 +32,25 @@ export default class ScenePlay extends Scene {
     this.ship = new Ship(eventEmitter, 200, 380, 30, 35);
     const touchArea = 60;
     this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
-    this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, data => {
-      this.directionToFlight = data.position;
-      this.shipPressed = true;
-    });
-    this.listenerEvent(EVENT_MOUSEUP, () => {
-      this.shipPressed = false;
-    });
-    this.listenerEvent(EVENT_MOUSEMOVE, data => {
-      if (this.shipPressed) {
-        this.directionToFlight = data.position;
-        this.calculateShipRotation(data.position);
-      }
-    });
+    this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.listenerEvent(EVENT_MOUSEUP, () => this.shipPressed = false);
+    this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
+    this.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
+    this.listenerEvent(EVENT_TOUCHUP, () => this.shipPressed = false);
+    this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
     this.timer = 0;
+  }
+
+  shipClickDown(data) {
+    this.directionToFlight = data.position;
+    this.shipPressed = true;
+  }
+
+  shipClickMove(data) {
+    if (this.shipPressed) {
+      this.directionToFlight = data.position;
+      this.calculateShipRotation(data.position);
+    }
   }
 
   calculateShipRotation(position) {
