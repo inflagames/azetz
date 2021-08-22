@@ -6,7 +6,7 @@ export default class Scene extends BaseObject {
    * @param eventEmitter {Observable}
    */
   constructor(navigator, eventEmitter) {
-    super(eventEmitter)
+    super(eventEmitter);
     this.navigator = navigator;
     this.backgroundColor = "#f00";
   }

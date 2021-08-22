@@ -1,4 +1,4 @@
-import {filterObservable} from "../utils/observable";
+import { filterObservable } from "../utils/observable";
 
 export default class BaseObject {
   /**
@@ -17,12 +17,10 @@ export default class BaseObject {
     this.height = height;
   }
 
-
   /**
    * @param context {CanvasRenderingContext2D}
    */
-  render(context) {
-  }
+  render(context) {}
 
   /**
    * Event listener
@@ -30,11 +28,16 @@ export default class BaseObject {
    * @param callback {function}
    */
   listenerEvent(event, callback) {
-    this.eventEmitter.pipe(filterObservable((data) => data.event === event))
+    this.eventEmitter
+      .pipe(filterObservable((data) => data.event === event))
       .on((data) => {
         const position = data.position;
-        if (position.x >= this.x && position.x <= this.x + this.width &&
-          position.y >= this.y && position.y <= this.y + this.height) {
+        if (
+          position.x >= this.x &&
+          position.x <= this.x + this.width &&
+          position.y >= this.y &&
+          position.y <= this.y + this.height
+        ) {
           callback();
         }
       });

@@ -1,6 +1,6 @@
 import Scene from "./scene";
 import Button from "../components/button";
-import {EVENT_CLICK, SCENE_MENU} from "../game";
+import { EVENT_CLICK, SCENE_MENU } from "../game";
 
 export default class Play extends Scene {
   /**
@@ -11,7 +11,9 @@ export default class Play extends Scene {
     super(navigator, eventEmitter);
     this.backgroundColor = "#0f0";
     this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
-    this.button.listenerEvent(EVENT_CLICK, () => this.navigator.navigate(SCENE_MENU));
+    this.button.listenerEvent(EVENT_CLICK, () =>
+      this.navigator.navigate(SCENE_MENU)
+    );
   }
 
   /**

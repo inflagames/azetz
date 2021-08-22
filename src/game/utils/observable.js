@@ -1,5 +1,4 @@
 export default class Observable {
-
   constructor() {
     /** @member {function[]} */
     this.subscriptions = [];
@@ -24,7 +23,7 @@ export default class Observable {
    */
   pipe(...functions) {
     let lastSteam = this;
-    for (let func of functions) {
+    for (const func of functions) {
       const stream = new Observable();
       lastSteam.on((data) => func(data, stream));
       lastSteam = stream;
@@ -49,7 +48,7 @@ export function filterObservable(func) {
     if (func(data)) {
       observable.emit(data);
     }
-  }
+  };
 }
 
 /**
@@ -59,5 +58,5 @@ export function filterObservable(func) {
 export function mapObservable(func) {
   return (data, /** @param {Observable} */ observable) => {
     observable.emit(func(data));
-  }
+  };
 }
