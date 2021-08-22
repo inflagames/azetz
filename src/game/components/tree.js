@@ -1,22 +1,20 @@
-import BaseObject from "./shared/base-object";
+export default class Rock {
+  constructor(x, y, len, angle, branchWidth, lineColor, fillColor) {
+    this.x = x;
+    this.y = y;
+    this.len = len;
+    this.angle = angle;
+    this.branchWidth = branchWidth;
+    this.lineColor = lineColor;
+    this.fillColor = fillColor;
+    this.wind = 0.1;
+  }
 
-export default class Rock extends BaseObject {
-  /**
-   * @param x {number}
-   * @param y {number}
-   * @param width {number}
-   * @param height {number}
-   * @param eventEmitter {Observable}
-   */
-  // constructor(eventEmitter, x, y, width, height) {
-  //   super(eventEmitter, x, y, width, height);
-  // }
-
-  drawTree(ctx, x, y, len, angle, branchWidth, color1, color2) {
+  drawTree(ctx, x, y, len, angle, branchWidth, lineColor, fillColor) {
     ctx.beginPath();
     ctx.save();
-    ctx.strokeStyle = color1;
-    ctx.fillStyle = color2;
+    ctx.strokeStyle = lineColor;
+    ctx.fillStyle = fillColor;
     ctx.line = branchWidth;
     ctx.translate(x, y);
     ctx.rotate((angle * Math.PI) / 180);
@@ -36,8 +34,8 @@ export default class Rock extends BaseObject {
       len * 0.75,
       angle + 5,
       branchWidth,
-      color1,
-      color2
+      lineColor,
+      fillColor
     );
     this.drawTree(
       ctx,
@@ -46,17 +44,35 @@ export default class Rock extends BaseObject {
       len * 0.75,
       angle - 5,
       branchWidth,
-      color1,
-      color2
+      lineColor,
+      fillColor
     );
 
     ctx.restore();
+  }
+
+  update() {
+    if (this.angle >= 10 || this.angle <= -10) {
+      this.wind = -this.wind;
+    }
+    this.angle += this.wind;
   }
 
   /**
    * @param context {CanvasRenderingContext2D}
    */
   render(context) {
-    this.drawTree(context, this.x, this.y, 80, 0, 4, "black", "black");
+    this.update();
+
+    this.drawTree(
+      context,
+      this.x,
+      this.y,
+      this.len,
+      this.angle,
+      this.branchWidth,
+      this.lineColor,
+      this.fillColor
+    );
   }
 }

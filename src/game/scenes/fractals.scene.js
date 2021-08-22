@@ -13,11 +13,13 @@ export default class SceneFractal extends Scene {
     this.backgroundColor = "red";
     this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
     this.tree = new Rock(
-      eventEmitter,
       Game.getInstance().width / 2,
       Game.getInstance().height * 0.9,
-      100,
-      100
+      80,
+      0,
+      4,
+      "black",
+      "black"
     );
     this.button.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_MENU)
