@@ -22,7 +22,7 @@ export default class Rock {
     ctx.lineTo(0, -len);
     ctx.stroke();
 
-    if (len < 10) {
+    if (len < this.len * 0.05) {
       ctx.restore();
       return;
     }
@@ -32,7 +32,7 @@ export default class Rock {
       0,
       -len,
       len * 0.75,
-      angle + 5,
+      angle + 10,
       branchWidth,
       lineColor,
       fillColor
@@ -42,7 +42,7 @@ export default class Rock {
       0,
       -len,
       len * 0.75,
-      angle - 5,
+      angle - 10,
       branchWidth,
       lineColor,
       fillColor
@@ -52,7 +52,7 @@ export default class Rock {
   }
 
   update() {
-    if (this.angle >= 10 || this.angle <= -10) {
+    if (this.angle >= 2 || this.angle <= -2) {
       this.wind = -this.wind;
     }
     this.angle += this.wind;
