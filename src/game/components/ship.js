@@ -11,12 +11,12 @@ export default class Ship extends BaseObject {
   constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
     super(eventEmitter, x, y, width, height);
     /** @member {number} */
-    this.rotation = 90;
+    this.rotation = Math.PI / 2;
     this.backgroundColor = "#00f";
   }
 
   render(context) {
-    const rotation = (this.rotation * Math.PI) / 180;
+    const rotation = this.rotation;//(this.rotation * Math.PI) / 180;
 
     // render ship body
     const leftSide = this.getPointByVectorAndRotation(
@@ -50,7 +50,7 @@ export default class Ship extends BaseObject {
     context.fill();
 
     // todo: test code, should be removed
-    this.rotation++;
+    // this.rotation++;
   }
 
   /**

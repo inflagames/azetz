@@ -7,6 +7,8 @@ export const STOP = 3;
 
 export const EVENT_CLICK = "0";
 export const EVENT_MOUSEDOWN = "1";
+export const EVENT_MOUSEUP = "2";
+export const EVENT_MOUSEMOVE = "3";
 
 export const SCENE_MENU = 0;
 export const SCENE_GAME = 1; // toDo guille 20.08.21:
@@ -15,19 +17,17 @@ export const SCENE_FRACTAL = 2;
 export const FPS = 30;
 const intervalPerSecond = 1000 / FPS;
 
-// @member {Game}
 let gameInstance = null;
 
 export default class Game {
   constructor() {
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
-    this.canvas.addEventListener("click", (e) =>
-      this.clickEvent(e, EVENT_CLICK)
-    );
-    this.canvas.addEventListener("mousedown", (e) =>
-      this.clickEvent(e, EVENT_MOUSEDOWN)
-    );
+    this.canvas.addEventListener("click", (e) => this.clickEvent(e, EVENT_CLICK));
+    this.canvas.addEventListener("mousedown", (e) => this.clickEvent(e, EVENT_MOUSEDOWN));
+    this.canvas.addEventListener("mouseup", (e) => this.clickEvent(e, EVENT_MOUSEUP));
+    this.canvas.addEventListener("mousemove", (e) => this.clickEvent(e, EVENT_MOUSEMOVE));
+    this.canvas.addEventListener("touchstart", (e) => this.touchEvent(e, EVENT_MOUSEUP));
     /** @member {Observable} */
     this.eventEmitter = new Observable();
     /** @member {CanvasRenderingContext2D} */
@@ -38,6 +38,13 @@ export default class Game {
     this.lastTime = 0;
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+  }
+
+  /**
+   * @param event {TouchEvent}
+   * @param type {string}
+   */
+  touchEvent(event, type) {
   }
 
   /**
