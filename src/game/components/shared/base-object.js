@@ -1,4 +1,5 @@
 import {filterObservable} from "../../utils/observable";
+import {EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../game";
 
 export default class BaseObject {
   /**
@@ -32,7 +33,7 @@ export default class BaseObject {
     this.eventEmitter
       .pipe(filterObservable((data) => data.event === event))
       .on((data) => {
-        if (data && this.validateEventPropagation(data.position)) {
+        if (data && this.validateEventPropagation(data.position, data.event)) {
           callback(data);
         }
       });
@@ -41,9 +42,14 @@ export default class BaseObject {
   /**
    *
    * @param position {{x: number, y: number}}
+   * @param event {string}
    * @return {boolean}
    */
-  validateEventPropagation(position) {
+  validateEventPropagation(position, event) {
+    if (event === EVENT_TOUCHUP || event === EVENT_MOUSEOUT ||
+      event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE){
+      return true;
+    }
     return position && position.x >= this.x &&
       position.x <= this.x + this.width &&
       position.y >= this.y &&

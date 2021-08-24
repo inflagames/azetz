@@ -13,12 +13,5 @@ export default class TouchArea extends BaseObject {
    */
   constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
     super(eventEmitter, x, y, width, height);
-    this.backgroundColor = "#00000000";
-  }
-
-  render(context) {
-    context.beginPath();
-    context.strokeStyle = this.backgroundColor;
-    context.strokeRect(this.x, this.y, this.width, this.height);
   }
 }
