@@ -30,13 +30,13 @@ export default class ScenePlay extends Scene {
       this.navigator.navigate(SCENE_MENU)
     );
     this.ship = new Ship(eventEmitter, 200, 380, 30, 35);
-    const touchArea = 60;
+    const touchArea = 200;
     this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
-    this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_MOUSEUP, () => this.shipPressed = false);
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
-    this.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
-    this.listenerEvent(EVENT_TOUCHUP, () => this.shipPressed = false);
+    this.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
+    this.listenerEvent(EVENT_TOUCHUP, () => {this.shipPressed = false});
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
     this.timer = 0;
   }
