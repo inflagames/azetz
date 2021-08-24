@@ -47,17 +47,25 @@ export default class Game {
     this.canvas.addEventListener("mousemove", (e) =>
       this.clickEvent(e, EVENT_MOUSEMOVE)
     );
-    this.canvas.addEventListener("touchstart", (e) =>
-      this.touchEvent(e, EVENT_TOUCHDOWN), false
+    this.canvas.addEventListener(
+      "touchstart",
+      (e) => this.touchEvent(e, EVENT_TOUCHDOWN),
+      false
     );
-    this.canvas.addEventListener("touchend", (e) =>
-      this.touchEvent(e, EVENT_TOUCHUP), false
+    this.canvas.addEventListener(
+      "touchend",
+      (e) => this.touchEvent(e, EVENT_TOUCHUP),
+      false
     );
-    this.canvas.addEventListener("touchcancel", (e) =>
-      this.touchEvent(e, EVENT_TOUCHCANCEL), false
+    this.canvas.addEventListener(
+      "touchcancel",
+      (e) => this.touchEvent(e, EVENT_TOUCHCANCEL),
+      false
     );
-    this.canvas.addEventListener("touchmove", (e) =>
-      this.touchEvent(e, EVENT_TOUCHMOVE), false
+    this.canvas.addEventListener(
+      "touchmove",
+      (e) => this.touchEvent(e, EVENT_TOUCHMOVE),
+      false
     );
     /** @member {Observable} */
     this.eventEmitter = new Observable();
@@ -76,11 +84,14 @@ export default class Game {
    * @param type {string}
    */
   touchEvent(event, type) {
-    console.log(type)
-    this.emitPositionEvent({
-      x: event?.targetTouches[0]?.pageX,
-      y: event?.targetTouches[0]?.pageY,
-    }, type);
+    console.log(type);
+    this.emitPositionEvent(
+      {
+        x: event?.targetTouches[0]?.pageX,
+        y: event?.targetTouches[0]?.pageY,
+      },
+      type
+    );
   }
 
   /**
