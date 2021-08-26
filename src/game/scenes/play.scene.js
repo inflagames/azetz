@@ -1,20 +1,18 @@
 import Scene from "./shared/scene";
 import Button from "../components/button";
 import {
-  EVENT_CLICK,
-  EVENT_MOUSEDOWN,
-  EVENT_MOUSEMOVE,
-  EVENT_MOUSEUP,
+  EVENT_CLICK, EVENT_MOUSEDOWN,
+  EVENT_MOUSEMOVE, EVENT_MOUSEUP,
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
-  EVENT_TOUCHUP,
-  SCENE_MENU
+  EVENT_TOUCHUP, SCENE_MENU,
+  SCREEN_HEIGHT, SCREEN_WIDTH
 } from "../game";
 import Ship from "../components/ship";
 import TouchArea from "../components/touch-area";
 import GameLogic from "./shared/game.logic";
+import {scale} from "../utils/helpers";
 
-const SHIP_POSITION_X = 200;
-const SHIP_POSITION_Y = 360;
+const SHIP_PADDING_Y = 80;
 
 const TOUCH_AREA_SIZE = 200;
 
@@ -31,12 +29,20 @@ export default class ScenePlay extends Scene {
     this.height = 400;
     this.backgroundColor = "#0f0";
     this.backgroundColor2 = "#0ff";
+
+    // menu button
     this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
     this.button.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_MENU)
     );
-    this.ship = new Ship(eventEmitter, SHIP_POSITION_X, SHIP_POSITION_Y, 30, 35);
-    this.shipTouchArea = new TouchArea(eventEmitter, 200 - TOUCH_AREA_SIZE / 2, 380 - TOUCH_AREA_SIZE, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
+
+    // ship component
+    this.ship = new Ship(eventEmitter, SCREEN_WIDTH / 2,
+      SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
+
+    // ship touch area component
+    this.shipTouchArea =
+      new TouchArea(eventEmitter, SCREEN_WIDTH / 2 - TOUCH_AREA_SIZE / 2, SCREEN_HEIGHT - SHIP_PADDING_Y - TOUCH_AREA_SIZE / 2, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
     this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
@@ -45,12 +51,15 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
     this.timer = 0;
 
+    // game logic
     this.currentGame = new GameLogic();
   }
 
   shipClickUp() {
-    this.shipPressed = false;
-    this.currentGame.launchShip(this.ship.rotation);
+    if (this.shipPressed) {
+      this.shipPressed = false;
+      this.currentGame.launchShip(this.ship.rotation);
+    }
   }
 
   shipClickDown(data) {
@@ -66,7 +75,7 @@ export default class ScenePlay extends Scene {
   }
 
   calculateShipRotation(position) {
-    this.ship.rotation = Math.atan2(SHIP_POSITION_Y - position.y, position.x - this.ship.x);
+    this.ship.rotation = Math.atan2((SCREEN_HEIGHT - SHIP_PADDING_Y) - position.y, position.x - this.ship.x);
   }
 
   /**
@@ -102,15 +111,15 @@ export default class ScenePlay extends Scene {
       context.beginPath();
       context.strokeStyle = "#f00";
       context.lineWidth = 3;
-      context.moveTo(this.ship.x, SHIP_POSITION_Y);
-      context.lineTo(this.directionToFlight.x, this.directionToFlight.y);
+      context.moveTo(scale(this.ship.x), scale(SCREEN_HEIGHT - SHIP_PADDING_Y));
+      context.lineTo(scale(this.directionToFlight.x), scale(this.directionToFlight.y));
       context.stroke();
     }
   }
 
   cleanCanvas(context) {
     // toDo 22.08.21, guille, render the background here
-    const lineSize = 50;
+    const lineSize = scale(50);
     const yPosition = this.currentGame.ship.y;
     let y1 = yPosition % lineSize, counter = Math.floor(yPosition / lineSize) % 2;
     this.renderBackgroundLines(context, 0, y1, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
@@ -119,7 +128,7 @@ export default class ScenePlay extends Scene {
       this.renderBackgroundLines(context, y1, lineSize, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
       y1 += lineSize;
       counter++;
-      if (y1 >= 400) {
+      if (y1 >= this.height) {
         break;
       }
     }
@@ -130,7 +139,7 @@ export default class ScenePlay extends Scene {
 
   renderBackgroundLines(context, y1, lineSize, color) {
     context.beginPath();
-    context.rect(0, y1, 400, lineSize);
+    context.rect(0, y1, this.width, lineSize);
     context.fillStyle = color;
     context.fill();
   }

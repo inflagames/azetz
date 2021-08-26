@@ -1,4 +1,26 @@
 body {
   background: #2a2929;
   color: #fff;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  canvas {
+    width: 500px;
+    height: auto;
+  }
+
+  @media screen and (max-height: 500px) {
+
+    canvas {
+      width: 100%;
+      height: auto;
+    }
+  }
 }

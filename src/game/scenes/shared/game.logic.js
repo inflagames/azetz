@@ -1,17 +1,18 @@
 import {rotateVector} from "../../utils/helpers";
-import {FPS} from "../../game";
+import {FPS, SCREEN_WIDTH} from "../../game";
 
 const SHIP_ACCELERATING = "0";
 const SHIP_DECELERATION = "1";
 const SHIP_STOP = "3"
 
 const MAX_VELOCITY = 10;
+const MARGIN_TO_COLLIDE = 10;
 
 export default class GameLogic {
   constructor() {
     this.time = 0;
     this.ship = {
-      x: 200,
+      x: SCREEN_WIDTH / 2,
       y: 0,
       rotation: Math.PI / 2,
       velocity: 0,
@@ -71,7 +72,8 @@ export default class GameLogic {
   }
 
   wallCollision() {
-    if ((this.ship.rotation > Math.PI / 2 && this.ship.x < 10) || (this.ship.rotation < Math.PI && this.ship.x > 390)) {
+    if ((this.ship.rotation > Math.PI / 2 && this.ship.x < MARGIN_TO_COLLIDE) ||
+      (this.ship.rotation < Math.PI && this.ship.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE)) {
       this.ship.rotation = Math.PI - this.ship.rotation;
     }
   }

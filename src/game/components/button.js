@@ -1,4 +1,5 @@
 import BaseObject from "./shared/base-object";
+import {scale} from "../utils/helpers";
 
 export default class Button extends BaseObject {
   /**
@@ -22,20 +23,20 @@ export default class Button extends BaseObject {
    */
   render(context) {
     context.beginPath();
-    context.rect(this.x, this.y, this.width, this.height);
+    context.rect(scale(this.x), scale(this.y), scale(this.width), scale(this.height));
     context.fillStyle = this.backgroundColor;
     context.fill();
 
     context.beginPath();
-    context.font = `${this.textSize}px Arial`;
+    context.font = `${scale(this.textSize)}px Arial`;
     let metrics = context.measureText(this.text);
     const textWidth = metrics.width;
     const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     context.fillStyle = this.textColor;
     context.fillText(
       this.text,
-      this.x + this.width / 2 - textWidth / 2,
-      this.y + this.height / 2 + textHeight / 2
+      scale(this.x + this.width / 2 - textWidth / 2),
+      scale(this.y + this.height / 2 + textHeight / 2)
     );
   }
 }
