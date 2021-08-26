@@ -16,6 +16,8 @@ import GameLogic from "./shared/game.logic";
 const SHIP_POSITION_X = 200;
 const SHIP_POSITION_Y = 360;
 
+const TOUCH_AREA_SIZE = 200;
+
 export default class ScenePlay extends Scene {
   /**
    * @param navigator {Navigator}
@@ -34,8 +36,7 @@ export default class ScenePlay extends Scene {
       this.navigator.navigate(SCENE_MENU)
     );
     this.ship = new Ship(eventEmitter, SHIP_POSITION_X, SHIP_POSITION_Y, 30, 35);
-    const touchArea = 200;
-    this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
+    this.shipTouchArea = new TouchArea(eventEmitter, 200 - TOUCH_AREA_SIZE / 2, 380 - TOUCH_AREA_SIZE, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
     this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
@@ -65,7 +66,7 @@ export default class ScenePlay extends Scene {
   }
 
   calculateShipRotation(position) {
-    this.ship.rotation = Math.atan2(380 - position.y, position.x - 200);
+    this.ship.rotation = Math.atan2(SHIP_POSITION_Y - position.y, position.x - this.ship.x);
   }
 
   /**
@@ -75,6 +76,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.play();
     if (this.currentGame.isFighting()) {
       this.updateShipPosition();
+      this.shipTouchArea.x = this.ship.x - TOUCH_AREA_SIZE / 2;
     }
     super.render(context);
 
@@ -100,7 +102,7 @@ export default class ScenePlay extends Scene {
       context.beginPath();
       context.strokeStyle = "#f00";
       context.lineWidth = 3;
-      context.moveTo(SHIP_POSITION_X, SHIP_POSITION_Y);
+      context.moveTo(this.ship.x, SHIP_POSITION_Y);
       context.lineTo(this.directionToFlight.x, this.directionToFlight.y);
       context.stroke();
     }
