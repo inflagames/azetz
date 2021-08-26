@@ -12,6 +12,7 @@ import TouchArea from "../components/touch-area";
 import GameLogic from "./shared/game.logic";
 import {scale} from "../utils/helpers";
 import Score from "../components/score";
+import Space from "../components/space";
 
 const SHIP_PADDING_Y = 80;
 
@@ -51,13 +52,15 @@ export default class ScenePlay extends Scene {
     this.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
-    this.timer = 0;
 
     // score component
     this.score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
 
     // game logic
     this.currentGame = new GameLogic();
+
+    // space background
+    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   }
 
   shipClickUp() {
@@ -129,29 +132,7 @@ export default class ScenePlay extends Scene {
   }
 
   cleanCanvas(context) {
-    // toDo 22.08.21, guille, render the background here
-    const lineSize = scale(50);
-    const yPosition = this.currentGame.ship.y;
-    let y1 = yPosition % lineSize, counter = Math.floor(yPosition / lineSize) % 2;
-    this.renderBackgroundLines(context, 0, y1, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
-    counter++;
-    while (true) {
-      this.renderBackgroundLines(context, y1, lineSize, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
-      y1 += lineSize;
-      counter++;
-      if (y1 >= this.height) {
-        break;
-      }
-    }
-    // toDo 22.08.21, guille, timer in this case, is use as the distance that the ship has fighting
-    // this variable should be replaced in the code, as the current Y position of the ship
-    this.timer++;
-  }
-
-  renderBackgroundLines(context, y1, lineSize, color) {
-    context.beginPath();
-    context.rect(0, y1, this.width, lineSize);
-    context.fillStyle = color;
-    context.fill();
+    this.space.shipY = this.currentGame.ship.y;
+    this.space.render(context);
   }
 }
