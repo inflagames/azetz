@@ -31,11 +31,7 @@ export default class Navigator {
       if (data.event === EVENT_RESIZE && data.dimension) {
         this.gameWidth = data.dimension.w;
         this.gameHeght = data.dimension.h;
-
-        this.scenesInstances.forEach((scene) => {
-          scene.width = this.gameWidth;
-          scene.height = this.gameHeght;
-        });
+        this.updateGameDimensions();
       }
     });
 
@@ -56,6 +52,14 @@ export default class Navigator {
         new (this.sceneClasses.get(scene))(this, new Observable())
       );
       this.currentScene = this.scenesInstances.get(scene);
+    }
+    this.updateGameDimensions();
+  }
+
+  updateGameDimensions() {
+    if (this.currentScene) {
+      this.currentScene.width = this.gameWidth;
+      this.currentScene.height = this.gameHeght;
     }
   }
 }
