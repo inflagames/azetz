@@ -6,7 +6,7 @@ const SHIP_DECELERATING = "1";
 const SHIP_STOP = "3";
 const SHIP_ROTATING = "4";
 
-const MAX_VELOCITY = 10;
+const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
 const TIME_TO_ROTATE_SHIP_MS = 400;
 
@@ -19,7 +19,7 @@ export default class GameLogic {
       rotation: Math.PI / 2,
       expectedRotation: 0,
       velocity: 0,
-      acceleration: 5,
+      acceleration: 10,
       deceleration: -2,
       status: [SHIP_STOP]
     };
@@ -74,13 +74,13 @@ export default class GameLogic {
     }
     let velocity = 0;
     if (this.shipStatus() === SHIP_ACCELERATING) {
-      velocity = this.ship.velocity + this.ship.acceleration / FPS;
+      velocity = this.ship.velocity + this.ship.acceleration * FPS / 1000;
       if (velocity > MAX_VELOCITY) {
         this.ship.status = [SHIP_DECELERATING];
       }
     }
     if (this.shipStatus() === SHIP_DECELERATING) {
-      velocity = this.ship.velocity + this.ship.deceleration / FPS;
+      velocity = this.ship.velocity + this.ship.deceleration * FPS / 1000;
       if (velocity <= 0) {
         this.ship.status = [SHIP_STOP];
         velocity = 0;
