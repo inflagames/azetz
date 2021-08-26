@@ -13,6 +13,9 @@ import Ship from "../components/ship";
 import TouchArea from "../components/touch-area";
 import GameLogic from "./shared/game.logic";
 
+const SHIP_POSITION_X = 200;
+const SHIP_POSITION_Y = 360;
+
 export default class ScenePlay extends Scene {
   /**
    * @param navigator {Navigator}
@@ -30,7 +33,7 @@ export default class ScenePlay extends Scene {
     this.button.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_MENU)
     );
-    this.ship = new Ship(eventEmitter, 200, 380, 30, 35);
+    this.ship = new Ship(eventEmitter, SHIP_POSITION_X, SHIP_POSITION_Y, 30, 35);
     const touchArea = 200;
     this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
     this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
@@ -97,7 +100,7 @@ export default class ScenePlay extends Scene {
       context.beginPath();
       context.strokeStyle = "#f00";
       context.lineWidth = 3;
-      context.moveTo(200, 380);
+      context.moveTo(SHIP_POSITION_X, SHIP_POSITION_Y);
       context.lineTo(this.directionToFlight.x, this.directionToFlight.y);
       context.stroke();
     }
@@ -106,10 +109,9 @@ export default class ScenePlay extends Scene {
   cleanCanvas(context) {
     // toDo 22.08.21, guille, render the background here
     const lineSize = 50;
-    const velocity = 10;
     const yPosition = this.currentGame.ship.y;
-    let y1 = yPosition % velocity * lineSize / velocity, counter = Math.floor(yPosition / velocity) % 2;
-    this.renderBackgroundLines(context, 0, yPosition % velocity * lineSize / velocity, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
+    let y1 = yPosition % lineSize, counter = Math.floor(yPosition / lineSize) % 2;
+    this.renderBackgroundLines(context, 0, y1, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
     counter++;
     while (true) {
       this.renderBackgroundLines(context, y1, lineSize, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
