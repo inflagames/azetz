@@ -1,5 +1,6 @@
 import Navigator from "./navigator";
 import Observable from "./utils/observable";
+import {unscale} from "./utils/helpers";
 
 export const RUNNING = 1;
 export const PAUSE = 2;
@@ -15,9 +16,10 @@ export const EVENT_TOUCHDOWN = "4";
 export const EVENT_TOUCHUP = "5";
 export const EVENT_TOUCHMOVE = "6";
 export const EVENT_TOUCHCANCEL = "7";
+export const EVENT_RESIZE = "8";
 
 export const SCENE_MENU = 0;
-export const SCENE_GAME = 1; // toDo guille 20.08.21:
+export const SCENE_GAME = 1;
 export const SCENE_FRACTAL = 2;
 
 export const FPS = 30;
@@ -25,11 +27,37 @@ const intervalPerSecond = 1000 / FPS;
 
 let gameInstance = null;
 
+export const SCREEN_RATIO = 16 / 9;
+export const SCREEN_WIDTH = 500;
+export const SCREEN_HEIGHT = SCREEN_WIDTH * SCREEN_RATIO;
+
 export default class Game {
   constructor() {
+    window.addEventListener('resize', this.resizeScreen.bind(this));
+
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
-    // toDo 24.08.21, guille, improve this code to avoid repeat the same method
+
+    this.registerEvents();
+
+    /** @member {Observable} */
+    this.eventEmitter = new Observable();
+
+    /** @member {CanvasRenderingContext2D} */
+    this.context = this.canvas.getContext("2d");
+
+    /** @member {Navigator} */
+    this.navigatorRoot = new Navigator(SCENE_GAME, this.eventEmitter);
+
+    this.loopStatus = STOP;
+    this.lastTime = 0;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+
+    this.resizeScreen();
+  }
+
+  registerEvents() {
     this.canvas.addEventListener("click", (e) =>
       this.clickEvent(e, EVENT_CLICK)
     );
@@ -68,16 +96,25 @@ export default class Game {
       (e) => this.touchEvent(e, EVENT_TOUCHMOVE),
       false
     );
-    /** @member {Observable} */
-    this.eventEmitter = new Observable();
-    /** @member {CanvasRenderingContext2D} */
-    this.context = this.canvas.getContext("2d");
-    /** @member {Navigator} */
-    this.navigatorRoot = new Navigator(SCENE_GAME, this.eventEmitter);
-    this.loopStatus = STOP;
-    this.lastTime = 0;
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
+  }
+
+  resizeScreen() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    let calculatedWidth = Math.min(SCREEN_WIDTH, width);
+    let calculatedHeight = calculatedWidth * SCREEN_RATIO;
+
+    if (calculatedHeight > height) {
+      calculatedHeight = height;
+      calculatedWidth = height / SCREEN_RATIO;
+    }
+
+    this.canvas.width = calculatedWidth;
+    this.canvas.height = calculatedHeight;
+
+    window.currentWidth = calculatedWidth;
+    this.eventEmitter.emit({event: EVENT_RESIZE, dimension: {w: calculatedWidth, h: calculatedHeight},});
   }
 
   /**
@@ -100,7 +137,7 @@ export default class Game {
    * @param type {string}
    */
   clickEvent(event, type) {
-    this.emitPositionEvent({ x: event?.clientX, y: event?.clientY }, type);
+    this.emitPositionEvent({x: event?.clientX, y: event?.clientY}, type);
   }
 
   /**
@@ -111,8 +148,8 @@ export default class Game {
     this.eventEmitter.emit({
       event: type,
       position: {
-        x: position.x - rect.left,
-        y: position.y - rect.top,
+        x: unscale(position.x - rect.left),
+        y: unscale(position.y - rect.top),
       },
     });
   }

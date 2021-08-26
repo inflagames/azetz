@@ -15,7 +15,7 @@ ls dist | grep -P ".*map$" | xargs bash -c 'for arg; do delFile "dist/$arg"; don
 
 zip -r -9 $GAME_ZIP_FILE_NAME dist
 
-FILE_SIZE=`du -k "$GAME_ZIP_FILE_NAME" | cut -f1`
+FILE_SIZE=$(($(du -b azetz.zip | cut -f1) / 1024))
 
 if (( $FILE_SIZE > 13 )); then
   echo "-----------------------------------------"

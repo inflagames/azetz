@@ -1,5 +1,5 @@
 import BaseObject from "./shared/base-object";
-import {rotateVector} from "../utils/helpers";
+import {rotateVector, scale} from "../utils/helpers";
 
 export default class Ship extends BaseObject {
   /**
@@ -42,9 +42,9 @@ export default class Ship extends BaseObject {
       rotation
     );
     context.beginPath();
-    context.moveTo(leftSide.x, leftSide.y);
-    context.lineTo(frontSide.x, frontSide.y);
-    context.lineTo(rightSide.x, rightSide.y);
+    context.moveTo(scale(leftSide.x), scale(leftSide.y));
+    context.lineTo(scale(frontSide.x), scale(frontSide.y));
+    context.lineTo(scale(rightSide.x), scale(rightSide.y));
     context.closePath();
     context.fillStyle = this.backgroundColor;
     context.fill();

@@ -22,7 +22,7 @@ export default class Scene extends BaseObject {
    * @param context {CanvasRenderingContext2D}
    */
   cleanCanvas(context) {
-    context.rect(0, 0, 400, 400);
+    context.rect(0, 0, this.width, this.height);
     context.fillStyle = this.backgroundColor;
     context.fill();
   }
