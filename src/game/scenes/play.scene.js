@@ -11,6 +11,7 @@ import {
 } from "../game";
 import Ship from "../components/ship";
 import TouchArea from "../components/touch-area";
+import GameLogic from "./shared/game.logic";
 
 export default class ScenePlay extends Scene {
   /**
@@ -33,12 +34,19 @@ export default class ScenePlay extends Scene {
     const touchArea = 200;
     this.shipTouchArea = new TouchArea(eventEmitter, 200 - touchArea / 2, 380 - touchArea, touchArea, touchArea);
     this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
-    this.listenerEvent(EVENT_MOUSEUP, () => this.shipPressed = false);
+    this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
     this.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
-    this.listenerEvent(EVENT_TOUCHUP, () => {this.shipPressed = false});
+    this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
     this.timer = 0;
+
+    this.currentGame = new GameLogic();
+  }
+
+  shipClickUp() {
+    this.shipPressed = false;
+    this.currentGame.launchShip(this.ship.rotation);
   }
 
   shipClickDown(data) {
@@ -61,6 +69,10 @@ export default class ScenePlay extends Scene {
    * @param context {CanvasRenderingContext2D}
    */
   render(context) {
+    this.currentGame.play();
+    if (this.currentGame.isFighting()) {
+      this.updateShipPosition();
+    }
     super.render(context);
 
     // toDo guille 20.08.21: render menu here
@@ -70,6 +82,11 @@ export default class ScenePlay extends Scene {
 
     // draw ship flight line
     this.drawFlightLine(context);
+  }
+
+  updateShipPosition() {
+    this.ship.x = this.currentGame.ship.x;
+    this.ship.rotation = this.currentGame.ship.rotation;
   }
 
   /**
@@ -90,8 +107,9 @@ export default class ScenePlay extends Scene {
     // toDo 22.08.21, guille, render the background here
     const lineSize = 50;
     const velocity = 10;
-    let y1 = this.timer % velocity * lineSize / velocity, counter = Math.floor(this.timer / velocity) % 2;
-    this.renderBackgroundLines(context, 0, this.timer % velocity * lineSize / velocity, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
+    const yPosition = this.currentGame.ship.y;
+    let y1 = yPosition % velocity * lineSize / velocity, counter = Math.floor(yPosition / velocity) % 2;
+    this.renderBackgroundLines(context, 0, yPosition % velocity * lineSize / velocity, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);
     counter++;
     while (true) {
       this.renderBackgroundLines(context, y1, lineSize, counter % 2 === 0 ? this.backgroundColor : this.backgroundColor2);

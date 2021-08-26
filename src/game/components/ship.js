@@ -1,4 +1,5 @@
 import BaseObject from "./shared/base-object";
+import {rotateVector} from "../utils/helpers";
 
 export default class Ship extends BaseObject {
   /**
@@ -48,9 +49,6 @@ export default class Ship extends BaseObject {
     context.closePath();
     context.fillStyle = this.backgroundColor;
     context.fill();
-
-    // todo: test code, should be removed
-    // this.rotation++;
   }
 
   /**
@@ -60,19 +58,8 @@ export default class Ship extends BaseObject {
    * @return {{x: number, y: number}}
    */
   getPointByVectorAndRotation(vector, pivot, phi) {
-    const result = this.rotateVector(vector, phi);
+    const result = rotateVector(vector, phi);
     return { x: pivot.x + result.x, y: pivot.y - result.y };
   }
 
-  /**
-   * @param vector {{x: number, y: number}}
-   * @param phi {number}
-   * @return {{x: number, y: number}}
-   */
-  rotateVector(vector, phi) {
-    return {
-      x: vector.x * Math.cos(phi) - vector.y * Math.sin(phi),
-      y: vector.x * Math.sin(phi) + vector.y * Math.cos(phi),
-    };
-  }
 }
