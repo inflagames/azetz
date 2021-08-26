@@ -1,0 +1,94 @@
+import BaseObject from "./shared/base-object";
+import {scale} from "../utils/helpers";
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
+
+export class Star extends BaseObject {
+  /**
+   * @param evenEmitter {Observable}
+   * @param x {number}
+   * @param y {number}
+   * @param ratio {number}
+   * @param groupIndex {number}
+   */
+  constructor(evenEmitter, x, y, ratio, groupIndex) {
+    super(evenEmitter, x, y, ratio);
+    this.group = groupIndex;
+    this.shipY = 0;
+  }
+
+  render(context) {
+    context.beginPath();
+    context.fillStyle = "rgba(255,255,255,0.4)";
+    context.arc(scale(this.x), scale(this.y + this.shipY - this.group * SCREEN_HEIGHT), scale(this.width), 0, Math.PI * 2);
+    context.fill();
+  }
+}
+
+export default class Space extends BaseObject {
+  /**
+   * @param eventEmitter {Observable}
+   * @param x {number}
+   * @param y {number}
+   * @param width {number}
+   * @param height {number}
+   */
+  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
+    super(eventEmitter, x, y, width, height);
+    this.backgroundColor = "#00f";
+    this.shipY = 0;
+    /** @member {Star[][]} */
+    this.stars = [];
+    this.groupCount = 0;
+
+    this.generateSpace();
+    this.generateSpace();
+  }
+
+  render(context) {
+    context.beginPath();
+    context.fillStyle = "rgba(0,0,0,0.96)";
+    context.rect(0, 0, scale(this.width), scale(this.height));
+    context.fill();
+
+    let removeGroup = false;
+    for (let i=0;i < this.stars.length;i++) {
+      let visible = false;
+      this.stars[i].forEach(star => {
+        if (this.isVisibleStar(star)) {
+          star.shipY = this.shipY;
+          star.render(context);
+          visible = true;
+        }
+      });
+      removeGroup |= !visible && i === 0;
+    }
+    if (removeGroup) {
+      this.stars.shift();
+      this.generateSpace();
+    }
+  }
+
+  generateSpace() {
+    const numberOfStars = 50;
+    const group = [];
+    for (let i = 0; i < numberOfStars; i++) {
+      group.push(new Star(this.eventEmitter, this.randomNumber(SCREEN_WIDTH),
+        this.randomNumber(SCREEN_HEIGHT), this.randomNumber(2, 1.5), this.groupCount));
+    }
+    this.groupCount++;
+    this.stars.push(group);
+  }
+
+  randomNumber(limit, start = 0) {
+    return Math.floor(Math.random() * limit) + start;
+  }
+
+  /**
+   * @param star {Star}
+   * @return {boolean}
+   */
+  isVisibleStar(star) {
+    const starY = star.y + this.shipY - star.group * SCREEN_HEIGHT;
+    return  starY >= 0 && starY < SCREEN_HEIGHT;
+  }
+}
