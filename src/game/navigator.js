@@ -1,9 +1,15 @@
-import {EVENT_RESIZE, SCENE_FRACTAL, SCENE_GAME, SCENE_MENU, SCREEN_RATIO, SCREEN_WIDTH} from "./game";
+import {
+  EVENT_RESIZE,
+  SCENE_FRACTAL,
+  SCENE_GAME,
+  SCENE_MENU,
+  SCREEN_RATIO,
+  SCREEN_WIDTH,
+} from "./game";
 import SceneFractal from "./scenes/fractals.scene";
 import Menu from "./scenes/menu.scene";
 import ScenePlay from "./scenes/play.scene";
 import Observable from "./utils/observable";
-import Scene from "./scenes/shared/scene";
 
 export default class Navigator {
   /**
@@ -26,7 +32,7 @@ export default class Navigator {
         this.gameWidth = data.dimension.w;
         this.gameHeght = data.dimension.h;
 
-        this.scenesInstances.forEach(scene => {
+        this.scenesInstances.forEach((scene) => {
           scene.width = this.gameWidth;
           scene.height = this.gameHeght;
         });
