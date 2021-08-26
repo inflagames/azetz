@@ -11,10 +11,12 @@ import Ship from "../components/ship";
 import TouchArea from "../components/touch-area";
 import GameLogic from "./shared/game.logic";
 import {scale} from "../utils/helpers";
+import Score from "../components/score";
 
 const SHIP_PADDING_Y = 80;
 
 const TOUCH_AREA_SIZE = 200;
+const SCORE_MARGIN = 10;
 
 export default class ScenePlay extends Scene {
   /**
@@ -50,6 +52,9 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
     this.timer = 0;
+
+    // score component
+    this.score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
 
     // game logic
     this.currentGame = new GameLogic();
@@ -90,12 +95,18 @@ export default class ScenePlay extends Scene {
     super.render(context);
 
     // toDo guille 20.08.21: render menu here
-    this.button.render(context);
     this.ship.render(context);
     this.shipTouchArea.render(context);
 
     // draw ship flight line
     this.drawFlightLine(context);
+
+    // screen elements
+    this.button.render(context);
+
+    // update score
+    this.score.score = Math.floor(this.currentGame.ship.y / 50);
+    this.score.render(context);
   }
 
   updateShipPosition() {

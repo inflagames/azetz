@@ -1,7 +1,6 @@
 import Scene from "./shared/scene";
 import Button from "../components/button";
 import {EVENT_CLICK, SCENE_FRACTAL, SCENE_GAME} from "../game";
-import Score from "../components/score";
 
 export default class SceneMenu extends Scene {
   /**
@@ -26,7 +25,6 @@ export default class SceneMenu extends Scene {
     this.studingFractalsBtn.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_FRACTAL)
     );
-    this.score = new Score(eventEmitter, 395, 5);
   }
 
   /**
@@ -38,6 +36,5 @@ export default class SceneMenu extends Scene {
     // toDo guille 20.08.21: render menu here
     this.playBtn.render(context);
     this.studingFractalsBtn.render(context);
-    this.score.render(context);
   }
 }
