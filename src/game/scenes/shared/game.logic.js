@@ -16,7 +16,7 @@ export default class GameLogic {
    */
   launchShip(rotation) {
     this.ship.rotation = rotation;
-    this.ship.velocity = 5;
+    this.ship.velocity = 10;
   }
 
   moveShip() {

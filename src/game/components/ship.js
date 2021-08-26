@@ -17,29 +17,28 @@ export default class Ship extends BaseObject {
   }
 
   render(context) {
-    const rotation = this.rotation;//(this.rotation * Math.PI) / 180;
+    const rotation = this.rotation + Math.PI / 2;//(this.rotation * Math.PI) / 180;
 
     // render ship body
     const leftSide = this.getPointByVectorAndRotation(
-      { x: this.width / 2, y: 0 },
+      {x: -this.width / 2, y: this.height / 2},
       {
         x: this.x,
         y: this.y,
       },
-      rotation + Math.PI / 2
+      rotation
     );
     const rightSide = this.getPointByVectorAndRotation(
-      { x: this.width / 2, y: 0 },
+      {x: this.width / 2, y: this.height / 2},
       {
         x: this.x,
         y: this.y,
       },
-      rotation - Math.PI / 2
+      rotation
     );
-    // noinspection JSSuspiciousNameCombination
     const frontSide = this.getPointByVectorAndRotation(
-      { x: this.height, y: 0 },
-      { x: this.x, y: this.y },
+      {x: 0, y: -this.height / 2},
+      {x: this.x, y: this.y},
       rotation
     );
     context.beginPath();
@@ -59,7 +58,7 @@ export default class Ship extends BaseObject {
    */
   getPointByVectorAndRotation(vector, pivot, phi) {
     const result = rotateVector(vector, phi);
-    return { x: pivot.x + result.x, y: pivot.y - result.y };
+    return {x: pivot.x + result.x, y: pivot.y - result.y};
   }
 
 }
