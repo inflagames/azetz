@@ -1,6 +1,6 @@
 import Navigator from "./navigator";
 import Observable from "./utils/observable";
-import {unscale} from "./utils/helpers";
+import { unscale } from "./utils/helpers";
 
 export const RUNNING = 1;
 export const PAUSE = 2;
@@ -33,7 +33,7 @@ export const SCREEN_HEIGHT = SCREEN_WIDTH * SCREEN_RATIO;
 
 export default class Game {
   constructor() {
-    window.addEventListener('resize', this.resizeScreen.bind(this));
+    window.addEventListener("resize", this.resizeScreen.bind(this));
 
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
@@ -114,7 +114,10 @@ export default class Game {
     this.canvas.height = calculatedHeight;
 
     window.currentWidth = calculatedWidth;
-    this.eventEmitter.emit({event: EVENT_RESIZE, dimension: {w: calculatedWidth, h: calculatedHeight},});
+    this.eventEmitter.emit({
+      event: EVENT_RESIZE,
+      dimension: { w: calculatedWidth, h: calculatedHeight },
+    });
   }
 
   /**
@@ -137,7 +140,7 @@ export default class Game {
    * @param type {string}
    */
   clickEvent(event, type) {
-    this.emitPositionEvent({x: event?.clientX, y: event?.clientY}, type);
+    this.emitPositionEvent({ x: event?.clientX, y: event?.clientY }, type);
   }
 
   /**
