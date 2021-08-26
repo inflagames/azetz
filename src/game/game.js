@@ -29,6 +29,7 @@ export default class Game {
   constructor() {
     /** @member {HTMLCanvasElement} */
     this.canvas = document.getElementById("game");
+    // toDo 24.08.21, guille, improve this code to avoid repeat the same method
     this.canvas.addEventListener("click", (e) =>
       this.clickEvent(e, EVENT_CLICK)
     );
