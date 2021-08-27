@@ -24,3 +24,12 @@ export function scale(value) {
 export function unscale(value) {
   return value * SCREEN_WIDTH / window.currentWidth;
 }
+
+/**
+ * @param limit {number}
+ * @param start {number}
+ * @returns {number}
+ */
+export function randomNumber(limit, start = 0) {
+  return Math.floor(Math.random() * limit) + start;
+}
