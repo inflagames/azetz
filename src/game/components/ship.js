@@ -1,8 +1,31 @@
 import BaseObject from "./shared/base-object";
 import {rotateVector, scale} from "../utils/helpers";
-import TouchArea from "./touch-area";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
 import {SHIP_PADDING_Y, TOUCH_AREA_SIZE} from "../scenes/play.scene";
+
+/**
+ * This component didn't render anything, it is only used for create a touching area in the game
+ */
+export class TouchArea extends BaseObject {
+  /**
+   * @param eventEmitter {Observable}
+   * @param x {number}
+   * @param y {number}
+   * @param width {number}
+   * @param height {number}
+   */
+  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
+    super(eventEmitter, x, y, width, height);
+  }
+
+  render(context) {
+    // toDo guille 27.08.21: remove this code
+    context.beginPath();
+    context.strokeStyle = "#f00";
+    context.rect(scale(this.x), scale(this.y), scale(this.width), scale(this.height));
+    context.stroke();
+  }
+}
 
 export default class Ship extends BaseObject {
   /**
@@ -20,42 +43,46 @@ export default class Ship extends BaseObject {
 
     this.shipTouchArea = new TouchArea(eventEmitter, SCREEN_WIDTH / 2 - TOUCH_AREA_SIZE / 2,
       SCREEN_HEIGHT - SHIP_PADDING_Y - TOUCH_AREA_SIZE / 2, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
+
+    this.updateCoordinates();
+  }
+
+  updateCoordinates(x, y) {
+    this.x = x || this.x;
+    this.y = y || this.y;
+
+    this.shipTouchArea.x = this.x - TOUCH_AREA_SIZE / 2;
+    this.shipTouchArea.y = this.y - TOUCH_AREA_SIZE / 2;
+  }
+
+  listenerEvent(event, callback) {
+    this.shipTouchArea.listenerEvent(event, callback);
   }
 
   render(context) {
     const rotation = this.rotation + Math.PI / 2;//(this.rotation * Math.PI) / 180;
 
-    // render ship body
-    const leftSide = this.getPointByVectorAndRotation(
+    // ship painted
+    const points = [
       {x: -this.width / 2, y: this.height / 2},
-      {
-        x: this.x,
-        y: this.y,
-      },
-      rotation
-    );
-    const rightSide = this.getPointByVectorAndRotation(
-      {x: this.width / 2, y: this.height / 2},
-      {
-        x: this.x,
-        y: this.y,
-      },
-      rotation
-    );
-    const frontSide = this.getPointByVectorAndRotation(
       {x: 0, y: -this.height / 2},
-      {x: this.x, y: this.y},
-      rotation
-    );
+      {x: this.width / 2, y: this.height / 2}
+    ];
+    const pivot = {x: this.x, y: this.y};
+
     context.beginPath();
-    context.moveTo(scale(leftSide.x), scale(leftSide.y));
-    context.lineTo(scale(frontSide.x), scale(frontSide.y));
-    context.lineTo(scale(rightSide.x), scale(rightSide.y));
+    let position = this.getPointByVectorAndRotation(points[0], pivot, rotation);
+    context.moveTo(scale(position.x), scale(position.y));
+    for (let i = 1; i < points.length; i++) {
+      let position = this.getPointByVectorAndRotation(points[i], pivot, rotation);
+      context.lineTo(scale(position.x), scale(position.y));
+    }
     context.closePath();
     context.fillStyle = this.backgroundColor;
     context.fill();
 
-    this.shipTouchArea.render(context);
+    // toDo guille 27.08.21: remove this code
+    // this.shipTouchArea.render(context);
   }
 
   /**

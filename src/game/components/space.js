@@ -1,6 +1,7 @@
 import BaseObject from "./shared/base-object";
 import {scale} from "../utils/helpers";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
+import {randomNumber} from "../utils/helpers";
 
 export class Star extends BaseObject {
   /**
@@ -72,15 +73,11 @@ export default class Space extends BaseObject {
     const numberOfStars = 50;
     const group = [];
     for (let i = 0; i < numberOfStars; i++) {
-      group.push(new Star(this.eventEmitter, this.randomNumber(SCREEN_WIDTH),
-        this.randomNumber(SCREEN_HEIGHT), this.randomNumber(2, 1.5), this.groupCount));
+      group.push(new Star(this.eventEmitter, randomNumber(SCREEN_WIDTH),
+        randomNumber(SCREEN_HEIGHT), randomNumber(2, 1.5), this.groupCount));
     }
     this.groupCount++;
     this.stars.push(group);
-  }
-
-  randomNumber(limit, start = 0) {
-    return Math.floor(Math.random() * limit) + start;
   }
 
   /**

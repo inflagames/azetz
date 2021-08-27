@@ -16,6 +16,9 @@ export default class BaseObject {
     this.y = y;
     this.width = width;
     this.height = height;
+
+    // toDo guille 27.08.21: improve this random value to be unique
+    this.id = Math.random() * 1000000;
   }
 
   /**

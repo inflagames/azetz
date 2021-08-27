@@ -28,8 +28,6 @@ export default class ScenePlay extends Scene {
     this.y = 0;
     this.width = 400;
     this.height = 400;
-    this.backgroundColor = "#0f0";
-    this.backgroundColor2 = "#0ff";
     // space background
     this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     // game logic
@@ -46,8 +44,8 @@ export default class ScenePlay extends Scene {
       SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
 
     // ship touch area component
-    this.ship.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
-    this.ship.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
+    this.ship.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.ship.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
 
     // subscribe to scene events
     this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
@@ -58,23 +56,22 @@ export default class ScenePlay extends Scene {
     // score component
     const score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
 
-    // subscribe to game-logic changes
+    // subscribe to game-logic after play events
     this.currentGame.afterPlay.on(ship => {
-      // update ship visual component
-      this.ship.x = ship.x;
-      this.ship.rotation = ship.rotation;
-
       // update score
       score.score = Math.floor(this.currentGame.ship.y / 50);
-
-      // update touch
-      this.ship.shipTouchArea.x = ship.x - TOUCH_AREA_SIZE / 2
     });
 
     // add components to the element array
     this.elements.push(this.ship);
     this.elements.push(button);
     this.elements.push(score);
+
+    // elements of the game
+    this.playableElements = [];
+
+    // link components with logic
+    this.currentGame.setShip(this.ship);
   }
 
   shipClickUp(data) {
@@ -118,6 +115,43 @@ export default class ScenePlay extends Scene {
     for(let element of this.elements) {
       element.render(context);
     }
+
+    this.renderOrRemovePlayableElements(context);
+
+    this.createEnemyByTime();
+  }
+
+  createEnemyByTime() {
+    const value = Math.floor(this.currentGame.ship.y / 300);
+    if (value !== this.flag) {
+      this.flag = value;
+      this.createEnemy();
+    }
+  }
+
+  createEnemy() {
+    const ship = new Ship(this.eventEmitter, 0, -SCREEN_HEIGHT, 30, 35);
+    ship.rotation = Math.PI * 3 / 2;
+    ship.backgroundColor = "#f00";
+    this.playableElements.push(ship);
+    this.currentGame.createEnemy(ship);
+  }
+
+  renderOrRemovePlayableElements(context) {
+    const toRemove = new Set();
+    for(let element of this.playableElements) {
+      if (this.isElementVisible(element)) {
+        element.render(context);
+      } else {
+        toRemove.add(element.id);
+        this.currentGame.removeEnemy(element.id);
+      }
+    }
+    this.playableElements = this.playableElements.filter(ele => !toRemove.has(ele.id));
+  }
+
+  isElementVisible(element) {
+    return  element.y - (element.height * 2) < SCREEN_HEIGHT;
   }
 
   /**
