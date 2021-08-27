@@ -18,6 +18,10 @@ export default class Scene extends BaseObject {
    */
   render(context) {
     this.cleanCanvas(context);
+    // render scene elements
+    for(let element of this.elements) {
+      element.render(context);
+    }
   }
 
   /**

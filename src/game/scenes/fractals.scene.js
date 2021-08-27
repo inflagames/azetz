@@ -11,8 +11,9 @@ export default class SceneFractal extends Scene {
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
     this.backgroundColor = "red";
-    this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
-    this.tree = new Rock(
+
+    const tree = new Rock(
+      this.eventEmitter,
       Game.getInstance().width / 2,
       Game.getInstance().height * 0.9,
       80,
@@ -21,9 +22,13 @@ export default class SceneFractal extends Scene {
       "black",
       "black"
     );
-    this.button.listenerEvent(EVENT_CLICK, () =>
+    const button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
+    button.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_MENU)
     );
+
+    this.elements.push(button);
+    this.elements.push(tree);
   }
 
   /**
@@ -31,10 +36,5 @@ export default class SceneFractal extends Scene {
    */
   render(context) {
     super.render(context);
-
-    this.tree.render(context);
-
-    // @todo render rock here
-    this.button.render(context);
   }
 }

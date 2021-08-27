@@ -105,7 +105,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.play();
 
     // render background
-    super.render(context);
+    this.cleanCanvas(context);
 
     // draw ship flight line
     this.drawFlightLine(context);
