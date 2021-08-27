@@ -1,5 +1,8 @@
 import BaseObject from "./shared/base-object";
 import {rotateVector, scale} from "../utils/helpers";
+import TouchArea from "./touch-area";
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
+import {SHIP_PADDING_Y, TOUCH_AREA_SIZE} from "../scenes/play.scene";
 
 export default class Ship extends BaseObject {
   /**
@@ -14,6 +17,9 @@ export default class Ship extends BaseObject {
     /** @member {number} */
     this.rotation = Math.PI / 2;
     this.backgroundColor = "#00f";
+
+    this.shipTouchArea = new TouchArea(eventEmitter, SCREEN_WIDTH / 2 - TOUCH_AREA_SIZE / 2,
+      SCREEN_HEIGHT - SHIP_PADDING_Y - TOUCH_AREA_SIZE / 2, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
   }
 
   render(context) {
@@ -48,6 +54,8 @@ export default class Ship extends BaseObject {
     context.closePath();
     context.fillStyle = this.backgroundColor;
     context.fill();
+
+    this.shipTouchArea.render(context);
   }
 
   /**

@@ -1,5 +1,6 @@
 import {rotateVector} from "../../utils/helpers";
 import {FPS, SCREEN_WIDTH} from "../../game";
+import Observable from "../../utils/observable";
 
 const SHIP_ACCELERATING = "0";
 const SHIP_DECELERATING = "1";
@@ -23,11 +24,13 @@ export default class GameLogic {
       deceleration: -2,
       status: [SHIP_STOP]
     };
+    this.afterPlay = new Observable();
   }
 
   play() {
     this.time++;
     this.moveShip();
+    this.afterPlay.emit(this.ship);
   }
 
   /**
@@ -91,6 +94,10 @@ export default class GameLogic {
 
   isFighting() {
     return this.shipStatus() !== SHIP_STOP;
+  }
+
+  isShipClickable() {
+    return this.ship.status !== SHIP_ROTATING;
   }
 
   wallCollision() {

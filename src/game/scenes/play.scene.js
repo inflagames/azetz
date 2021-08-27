@@ -8,15 +8,13 @@ import {
   SCREEN_HEIGHT, SCREEN_WIDTH
 } from "../game";
 import Ship from "../components/ship";
-import TouchArea from "../components/touch-area";
 import GameLogic from "./shared/game.logic";
 import {scale} from "../utils/helpers";
 import Score from "../components/score";
 import Space from "../components/space";
 
-const SHIP_PADDING_Y = 80;
-
-const TOUCH_AREA_SIZE = 200;
+export const SHIP_PADDING_Y = 80;
+export const TOUCH_AREA_SIZE = 200;
 const SCORE_MARGIN = 10;
 
 export default class ScenePlay extends Scene {
@@ -32,10 +30,14 @@ export default class ScenePlay extends Scene {
     this.height = 400;
     this.backgroundColor = "#0f0";
     this.backgroundColor2 = "#0ff";
+    // space background
+    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // game logic
+    this.currentGame = new GameLogic();
 
     // menu button
-    this.button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
-    this.button.listenerEvent(EVENT_CLICK, () =>
+    const button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
+    button.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_MENU)
     );
 
@@ -44,77 +46,88 @@ export default class ScenePlay extends Scene {
       SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
 
     // ship touch area component
-    this.shipTouchArea =
-      new TouchArea(eventEmitter, SCREEN_WIDTH / 2 - TOUCH_AREA_SIZE / 2, SCREEN_HEIGHT - SHIP_PADDING_Y - TOUCH_AREA_SIZE / 2, TOUCH_AREA_SIZE, TOUCH_AREA_SIZE);
-    this.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.ship.shipTouchArea.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.ship.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
+
+    // subscribe to scene events
     this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
-    this.shipTouchArea.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
 
     // score component
-    this.score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
+    const score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
 
-    // game logic
-    this.currentGame = new GameLogic();
+    // subscribe to game-logic changes
+    this.currentGame.afterPlay.on(ship => {
+      // update ship visual component
+      this.ship.x = ship.x;
+      this.ship.rotation = ship.rotation;
 
-    // space background
-    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+      // update score
+      score.score = Math.floor(this.currentGame.ship.y / 50);
+
+      // update touch
+      this.ship.shipTouchArea.x = ship.x - TOUCH_AREA_SIZE / 2
+    });
+
+    // add components to the element array
+    this.elements.push(this.ship);
+    this.elements.push(button);
+    this.elements.push(score);
   }
 
-  shipClickUp() {
+  shipClickUp(data) {
     if (this.shipPressed) {
       this.shipPressed = false;
-      this.currentGame.launchShip(this.ship.rotation);
+      this.currentGame.launchShip(this.calculateShipRotation(data.position));
     }
   }
 
   shipClickDown(data) {
-    this.directionToFlight = data.position;
-    this.shipPressed = true;
+    if (this.currentGame.isShipClickable()) {
+      this.directionToFlight = data.position;
+      this.shipPressed = true;
+    }
   }
 
   shipClickMove(data) {
     if (this.shipPressed) {
       this.directionToFlight = data.position;
-      this.calculateShipRotation(data.position);
     }
-  }
-
-  calculateShipRotation(position) {
-    this.ship.rotation = Math.atan2((SCREEN_HEIGHT - SHIP_PADDING_Y) - position.y, position.x - this.ship.x);
   }
 
   /**
    * @param context {CanvasRenderingContext2D}
    */
   render(context) {
+    // execute game logic
     this.currentGame.play();
-    if (this.currentGame.isFighting()) {
-      this.updateShipPosition();
-      this.shipTouchArea.x = this.ship.x - TOUCH_AREA_SIZE / 2;
-    }
-    super.render(context);
 
-    // toDo guille 20.08.21: render menu here
-    this.ship.render(context);
-    this.shipTouchArea.render(context);
+    // render background
+    super.render(context);
 
     // draw ship flight line
     this.drawFlightLine(context);
 
-    // screen elements
-    this.button.render(context);
+    if (!this.currentGame.isFighting()) {
+      this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
+    }
 
-    // update score
-    this.score.score = Math.floor(this.currentGame.ship.y / 50);
-    this.score.render(context);
+    // render scene elements
+    for(let element of this.elements) {
+      element.render(context);
+    }
   }
 
-  updateShipPosition() {
-    this.ship.x = this.currentGame.ship.x;
-    this.ship.rotation = this.currentGame.ship.rotation;
+  /**
+   * @param position {{x: number, y: number}}
+   * @returns {number}
+   */
+  calculateShipRotation(position) {
+    return position ?
+      Math.atan2((SCREEN_HEIGHT - SHIP_PADDING_Y) - position.y, position.x - this.ship.x) :
+      Math.PI / 2;
   }
 
   /**

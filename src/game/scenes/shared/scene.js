@@ -9,6 +9,8 @@ export default class Scene extends BaseObject {
     super(eventEmitter);
     this.navigator = navigator;
     this.backgroundColor = "#f00";
+    /** @member {BaseObject[]} */
+    this.elements = [];
   }
 
   /**
