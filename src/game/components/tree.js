@@ -1,7 +1,8 @@
-export default class Rock {
-  constructor(x, y, len, angle, branchWidth, lineColor, fillColor) {
-    this.x = x;
-    this.y = y;
+import BaseObject from "./shared/base-object";
+
+export default class Rock extends BaseObject {
+  constructor(eventEmitter, x, y, len, angle, branchWidth, lineColor, fillColor) {
+    super(eventEmitter, x, y);
     this.len = len;
     this.angle = angle;
     this.branchWidth = branchWidth;

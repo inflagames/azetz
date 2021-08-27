@@ -10,21 +10,25 @@ export default class SceneMenu extends Scene {
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
     this.spacing = 8;
-    this.playBtn = new Button(eventEmitter, 5, 7, 100, 30, "PLAY");
-    this.playBtn.listenerEvent(EVENT_CLICK, () =>
+
+    const playBtn = new Button(eventEmitter, 5, 7, 100, 30, "PLAY");
+    playBtn.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_GAME)
     );
-    this.studingFractalsBtn = new Button(
+    const studyingFractalsBtn = new Button(
       eventEmitter,
-      this.playBtn.x,
-      this.playBtn.y + this.playBtn.height + 2 * this.spacing,
+      playBtn.x,
+      playBtn.y + playBtn.height + 2 * this.spacing,
       100,
       30,
-      "STUDING FRACTALS"
+      "STUDYING FRACTALS"
     );
-    this.studingFractalsBtn.listenerEvent(EVENT_CLICK, () =>
+    studyingFractalsBtn.listenerEvent(EVENT_CLICK, () =>
       this.navigator.navigate(SCENE_FRACTAL)
     );
+
+    this.elements.push(playBtn);
+    this.elements.push(studyingFractalsBtn);
   }
 
   /**
@@ -32,9 +36,5 @@ export default class SceneMenu extends Scene {
    */
   render(context) {
     super.render(context);
-
-    // toDo guille 20.08.21: render menu here
-    this.playBtn.render(context);
-    this.studingFractalsBtn.render(context);
   }
 }
