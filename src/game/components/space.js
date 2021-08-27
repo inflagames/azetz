@@ -32,24 +32,28 @@ export default class Space extends BaseObject {
    * @param y {number}
    * @param width {number}
    * @param height {number}
+   * @param ratio {number}
    */
-  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
+  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0, ratio) {
     super(eventEmitter, x, y, width, height);
-    this.backgroundColor = "#00f";
+    this.backgroundColor = "rgba(0,0,0,0.96)";
     this.shipY = 0;
     /** @member {Star[][]} */
     this.stars = [];
     this.groupCount = 0;
+    this.ratio = ratio;
 
     this.generateSpace();
     this.generateSpace();
   }
 
   render(context) {
-    context.beginPath();
-    context.fillStyle = "rgba(0,0,0,0.96)";
-    context.rect(0, 0, scale(this.width), scale(this.height));
-    context.fill();
+    if (this.backgroundColor) {
+      context.beginPath();
+      context.fillStyle = this.backgroundColor;
+      context.rect(0, 0, scale(this.width), scale(this.height));
+      context.fill();
+    }
 
     let removeGroup = false;
     for (let i=0;i < this.stars.length;i++) {
@@ -70,11 +74,11 @@ export default class Space extends BaseObject {
   }
 
   generateSpace() {
-    const numberOfStars = 50;
+    const numberOfStars = 20;
     const group = [];
     for (let i = 0; i < numberOfStars; i++) {
       group.push(new Star(this.eventEmitter, randomNumber(SCREEN_WIDTH),
-        randomNumber(SCREEN_HEIGHT), randomNumber(2, 1.5), this.groupCount));
+        randomNumber(this.height), this.ratio, this.groupCount));
     }
     this.groupCount++;
     this.stars.push(group);

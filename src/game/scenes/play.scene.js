@@ -29,7 +29,12 @@ export default class ScenePlay extends Scene {
     this.width = 400;
     this.height = 400;
     // space background
-    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // toDo guille 27.08.21: refactor this code
+    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3);
+    this.space2 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2);
+    this.space2.backgroundColor = null;
+    this.space3 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
+    this.space3.backgroundColor = null;
     // game logic
     this.currentGame = new GameLogic();
 
@@ -60,6 +65,10 @@ export default class ScenePlay extends Scene {
     this.currentGame.afterPlay.on(ship => {
       // update score
       score.score = Math.floor(this.currentGame.ship.y / 50);
+
+      this.space.shipY = ship.y / 1.1;
+      this.space2.shipY = ship.y / 1.2;
+      this.space3.shipY = ship.y / 1.5;
     });
 
     // add components to the element array
@@ -179,7 +188,8 @@ export default class ScenePlay extends Scene {
   }
 
   cleanCanvas(context) {
-    this.space.shipY = this.currentGame.ship.y;
     this.space.render(context);
+    this.space2.render(context);
+    this.space3.render(context);
   }
 }
