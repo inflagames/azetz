@@ -3,11 +3,10 @@ const path = require("path");
 
 if (process.argv.length > 2) {
   const filePath = process.argv[2];
-  const resultFile = path.join(__dirname, process.argv[2] || "result.out");
-  console.log(filePath, resultFile);
-  const file = fs.readFileSync(process.argv[2], {encoding: "utf8"});
+  const resultFile = path.join(__dirname, process.argv[3] || "result.json");
+  const file = fs.readFileSync(filePath, {encoding: "utf8"});
 
-  extractPath(file);
+  fs.writeFileSync(resultFile, JSON.stringify(extractPath(file), null, '  '));
 }
 
 
@@ -48,15 +47,27 @@ function extractPath(file) {
       subs += p[i];
     }
 
-    console.log(values);
     shapes.push({
-      points: extractMesh(values.get('d'))
+      background: getStyle(values.get('style'), 'fill'),
+      points: extractMesh(values.get('d')),
+      id: values.get('id')
     });
-
-    // console.log(shapes);
   }
+  return shapes;
 }
 
+function getStyle(style, property) {
+  style = style.replace(/\s*/g, '');
+  const pp = style.split(';');
+  const properties = new Map();
+  for (let p of pp) {
+    if (p.length > 0) {
+      const s = p.split(':');
+      properties.set(s[0], s[1]);
+    }
+  }
+  return properties.get(property);
+}
 
 function cleanPath(p) {
   return p.replace(/\n/g, '').replace(/\s+/g, ' ');
@@ -67,7 +78,6 @@ function extractMesh(d) {
   const points = [];
   for (let i=0;i< values.length;) {
     let sn = [];
-    console.log(points)
     let lp = points.length > 0 ? points[points.length - 1] : null;
     switch (values[i]) {
       case 'l':
@@ -77,15 +87,20 @@ function extractMesh(d) {
         // line to; todo: this can be improve
         // move to
         // m 107.90441,153.47225 8.30323,-2.43043 0.38303,-6.32265 -8.81989,4.6104 z
+        const op = values[i];
         i++;
         sn = [];
-        while (/^\d.*/.test(values[i][0])) {
+        while (/^-?\d.*/.test(values[i])) {
           sn = [...sn, ...getPoint(values[i])];
-          console.log()
           if (sn.length === 2) {
-            points.push({x: sn[0], y: sn[1]});
+            if (op === 'M' || op === 'L' || !lp) {
+              points.push({x: sn[0], y: sn[1]});
+            } else {
+              points.push({x: lp.x + sn[0], y: lp.y + sn[1]});
+            }
             sn = [];
           }
+          lp = points.length > 0 ? points[points.length - 1] : null;
           i++;
         }
         break;
@@ -94,18 +109,26 @@ function extractMesh(d) {
         i++;
         break;
       case 'h':
-      case 'H':
-        // horizontal movement
         i++;
         sn = getPoint(values[i]);
         points.push({x: lp.x + sn[0], y: lp.y});
         break;
+      case 'H':
+        // horizontal movement
+        i++;
+        sn = getPoint(values[i]);
+        points.push({x: sn[0], y: lp.y});
+        break;
       case 'v':
+        i++;
+        sn = getPoint(values[i]);
+        points.push({x: lp.x, y: lp.y + sn[0]});
+        break;
       case 'V':
         // vertical movement
         i++;
         sn = getPoint(values[i]);
-        points.push({x: lp.x, y: lp.y + sn[0]});
+        points.push({x: lp.x, y: sn[0]});
         break;
       case 'C':
       case 'c':
@@ -128,7 +151,7 @@ function extractMesh(d) {
         i++;
     }
   }
-  return points;
+  return points.map(p => ({x: Math.round(p.x * 10) / 10, y: Math.round(p.y * 10) / 10}));
 }
 
 function getPoint(text) {
