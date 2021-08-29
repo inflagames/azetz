@@ -63,26 +63,46 @@ export default class Ship extends BaseObject {
     const rotation = this.rotation + Math.PI / 2;//(this.rotation * Math.PI) / 180;
 
     // ship painted
-    const points = [
+    const shapes = this.shipShape();/*[
       {x: -this.width / 2, y: this.height / 2},
       {x: 0, y: -this.height / 2},
       {x: this.width / 2, y: this.height / 2}
-    ];
+    ];*/
     const pivot = {x: this.x, y: this.y};
 
-    context.beginPath();
-    let position = this.getPointByVectorAndRotation(points[0], pivot, rotation);
-    context.moveTo(scale(position.x), scale(position.y));
-    for (let i = 1; i < points.length; i++) {
-      let position = this.getPointByVectorAndRotation(points[i], pivot, rotation);
-      context.lineTo(scale(position.x), scale(position.y));
+    for (let shape of shapes) {
+      const points = shape.points;
+      context.beginPath();
+      let position = this.getPointByVectorAndRotation(points[0], pivot, rotation);
+      context.moveTo(scale(position.x), scale(position.y));
+      for (let i = 1; i < points.length; i++) {
+        let position = this.getPointByVectorAndRotation(points[i], pivot, rotation);
+        context.lineTo(scale(position.x), scale(position.y));
+      }
+      context.closePath();
+      context.fillStyle = shape.background;
+      context.fill();
     }
-    context.closePath();
-    context.fillStyle = this.backgroundColor;
-    context.fill();
 
     // toDo guille 27.08.21: remove this code
     // this.shipTouchArea.render(context);
+  }
+
+  shipShape() {
+    return [{
+      background: this.backgroundColor,
+      points: [
+        {x: 0, y: -22}, {x: 4, y: -9}, {x: 6, y: 0}, {x: 5, y: -9.5}, {x: 3, y: 16}, {x: 3, y: 20}, {x: 1, y: 20},
+        {x: 0, y: 16}, {x: -1, y: 20}, {x: -3, y: 20}, {x: -3, y: 16}, {x: -5, y: -9.5}, {x: -6, y: 0}, {x: -4, y: -9}
+      ]
+    }, {
+      background: this.backgroundColor,
+      points: [
+        {x: 5.5, y: 0}, {x: 22, y: 7}, {x: 22, y: 11}, {x: 7.5, y: 9}, {x: -7.5, y: 9}, {x: -22, y: 11},
+        {x: -22, y: 7}, {x: -5.5, y: 0}
+      ]
+    }
+    ];
   }
 
   /**
