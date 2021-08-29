@@ -2,6 +2,7 @@ import BaseObject from "./shared/base-object";
 import {rotateVector, scale} from "../utils/helpers";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
 import {SHIP_PADDING_Y, TOUCH_AREA_SIZE} from "../scenes/play.scene";
+import shapes from '../shapes/ship1.json';
 
 /**
  * This component didn't render anything, it is only used for create a touching area in the game
@@ -71,7 +72,8 @@ export default class Ship extends BaseObject {
     const pivot = {x: this.x, y: this.y};
 
     for (let shape of shapes) {
-      const points = shape.points;
+      const scaleShape = 4;
+      const points = shape.points.map(p => ({x: p.x * scaleShape, y: p.y * scaleShape}));
       context.beginPath();
       let position = this.getPointByVectorAndRotation(points[0], pivot, rotation);
       context.moveTo(scale(position.x), scale(position.y));
@@ -89,20 +91,7 @@ export default class Ship extends BaseObject {
   }
 
   shipShape() {
-    return [{
-      background: this.backgroundColor,
-      points: [
-        {x: 0, y: -22}, {x: 4, y: -9}, {x: 6, y: 0}, {x: 5, y: -9.5}, {x: 3, y: 16}, {x: 3, y: 20}, {x: 1, y: 20},
-        {x: 0, y: 16}, {x: -1, y: 20}, {x: -3, y: 20}, {x: -3, y: 16}, {x: -5, y: -9.5}, {x: -6, y: 0}, {x: -4, y: -9}
-      ]
-    }, {
-      background: this.backgroundColor,
-      points: [
-        {x: 5.5, y: 0}, {x: 22, y: 7}, {x: 22, y: 11}, {x: 7.5, y: 9}, {x: -7.5, y: 9}, {x: -22, y: 11},
-        {x: -22, y: 7}, {x: -5.5, y: 0}
-      ]
-    }
-    ];
+    return shapes;
   }
 
   /**
