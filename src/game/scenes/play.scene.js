@@ -16,6 +16,28 @@ import shape3 from '../shapes/ship3.json';
 import shape4 from '../shapes/ship4.json';
 import Meteorite from "../components/meteorite";
 
+const isMobileMethod = {
+  Android: function () {
+    return navigator.userAgent.match(/Android/i);
+  },
+  BlackBerry: function () {
+    return navigator.userAgent.match(/BlackBerry/i);
+  },
+  iOS: function () {
+    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+  },
+  Opera: function () {
+    return navigator.userAgent.match(/Opera Mini/i);
+  },
+  Windows: function () {
+    return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+  },
+  any: function () {
+    return (isMobileMethod.Android() || isMobileMethod.BlackBerry() || isMobileMethod.iOS() || isMobileMethod.Opera() || isMobileMethod.Windows());
+  }
+};
+export const isMobile = isMobileMethod.any();
+
 export const SHIP_PADDING_Y = 80;
 export const TOUCH_AREA_SIZE = 200;
 const SCORE_MARGIN = 10;
@@ -52,8 +74,8 @@ export default class ScenePlay extends Scene {
       SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
 
     // ship touch area component
-    this.ship.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
-    this.ship.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
+    this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
+    this.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
 
     // subscribe to scene events
     this.listenerEvent(EVENT_MOUSEUP, this.shipClickUp.bind(this));
@@ -89,21 +111,21 @@ export default class ScenePlay extends Scene {
   shipClickUp(data) {
     if (this.shipPressed) {
       this.shipPressed = false;
-      this.currentGame.launchShip(this.calculateShipRotation(data.position));
+      this.currentGame.launchShip(this.calculateShipRotation(this.directionToFlight));
+      if (isMobile) {
+        this.directionToFlight = null;
+      }
     }
   }
 
   shipClickDown(data) {
     if (this.currentGame.isShipClickable()) {
-      this.directionToFlight = data.position;
       this.shipPressed = true;
     }
   }
 
   shipClickMove(data) {
-    if (this.shipPressed) {
-      this.directionToFlight = data.position;
-    }
+    this.directionToFlight = data.position;
   }
 
   /**
@@ -189,7 +211,7 @@ export default class ScenePlay extends Scene {
    * @param context {CanvasRenderingContext2D}
    */
   drawFlightLine(context) {
-    if (this.shipPressed) {
+    if (this.directionToFlight) {
       context.beginPath();
       context.strokeStyle = "#f00";
       context.lineWidth = 3;

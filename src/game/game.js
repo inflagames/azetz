@@ -124,7 +124,6 @@ export default class Game {
    * @param type {string}
    */
   touchEvent(event, type) {
-    console.log(type);
     this.emitPositionEvent(
       {
         x: event?.targetTouches[0]?.pageX,
