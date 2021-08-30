@@ -208,6 +208,10 @@ export default class GameLogic {
     return this.shipStatus() !== SHIP_STOP;
   }
 
+  isFinish() {
+    return this.shipStatus() === SHIP_DIE;
+  }
+
   isShipClickable() {
     return this.ship.status !== SHIP_ROTATING;
   }

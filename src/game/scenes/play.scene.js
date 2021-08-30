@@ -49,29 +49,6 @@ export default class ScenePlay extends Scene {
    */
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
-    this.x = 0;
-    this.y = 0;
-    this.width = 400;
-    this.height = 400;
-    // space background
-    // toDo guille 27.08.21: refactor this code
-    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3);
-    this.space2 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2);
-    this.space2.backgroundColor = null;
-    this.space3 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
-    this.space3.backgroundColor = null;
-    // game logic
-    this.currentGame = new GameLogic();
-
-    // menu button
-    const button = new Button(eventEmitter, 5, 7, 100, 30, "MENU");
-    button.listenerEvent(EVENT_CLICK, () =>
-      this.navigator.navigate(SCENE_MENU)
-    );
-
-    // ship component
-    this.ship = new Ship(eventEmitter, SCREEN_WIDTH / 2,
-      SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
 
     // ship touch area component
     this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
@@ -83,8 +60,32 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
 
+    this.initGame();
+  }
+
+  initGame() {
+    // space background
+    // toDo guille 27.08.21: refactor this code
+    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3);
+    this.space2 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2);
+    this.space2.backgroundColor = null;
+    this.space3 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
+    this.space3.backgroundColor = null;
+    // game logic
+    this.currentGame = new GameLogic();
+
+    // menu button
+    const button = new Button(this.eventEmitter, 5, 7, 100, 30, "MENU");
+    button.listenerEvent(EVENT_CLICK, () =>
+      this.navigator.navigate(SCENE_MENU)
+    );
+
+    // ship component
+    this.ship = new Ship(this.eventEmitter, SCREEN_WIDTH / 2,
+      SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
+
     // score component
-    const score = new Score(eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
+    const score = new Score(this.eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
 
     // subscribe to game-logic after play events
     this.currentGame.afterPlay.on(ship => {
@@ -97,7 +98,7 @@ export default class ScenePlay extends Scene {
     });
 
     // add components to the element array
-    this.elements.push(this.ship);
+    this.elements = [this.ship];
     this.elements.push(button);
     this.elements.push(score);
 
@@ -108,7 +109,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.setShip(this.ship);
   }
 
-  shipClickUp(data) {
+  shipClickUp() {
     if (this.shipPressed) {
       this.shipPressed = false;
       this.currentGame.launchShip(this.calculateShipRotation(this.directionToFlight));
@@ -118,7 +119,7 @@ export default class ScenePlay extends Scene {
     }
   }
 
-  shipClickDown(data) {
+  shipClickDown() {
     if (this.currentGame.isShipClickable()) {
       this.shipPressed = true;
     }
@@ -135,6 +136,11 @@ export default class ScenePlay extends Scene {
     // execute game logic
     this.currentGame.play();
 
+    if (this.currentGame.isFinish()) {
+      this.initGame();
+      return;
+    }
+
     // render background
     this.cleanCanvas(context);
 
@@ -146,7 +152,7 @@ export default class ScenePlay extends Scene {
     }
 
     // render scene elements
-    for(let element of this.elements) {
+    for (let element of this.elements) {
       element.render(context);
     }
 
@@ -181,7 +187,7 @@ export default class ScenePlay extends Scene {
 
   renderOrRemovePlayableElements(context) {
     const toRemove = new Set();
-    for(let element of this.playableElements) {
+    for (let element of this.playableElements) {
       if (this.isElementVisible(element)) {
         element.render(context);
       } else {
@@ -194,7 +200,7 @@ export default class ScenePlay extends Scene {
   }
 
   isElementVisible(element) {
-    return  element.y - (element.height * 2) < SCREEN_HEIGHT;
+    return element.y - (element.height * 2) < SCREEN_HEIGHT;
   }
 
   /**
