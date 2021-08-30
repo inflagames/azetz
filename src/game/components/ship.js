@@ -2,7 +2,7 @@ import BaseObject from "./shared/base-object";
 import {rotateVector, scale} from "../utils/helpers";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
 import {SHIP_PADDING_Y, TOUCH_AREA_SIZE} from "../scenes/play.scene";
-import shapes from '../shapes/ship1.json';
+import shapes from '../shapes/ship2.json';
 
 /**
  * This component didn't render anything, it is only used for create a touching area in the game
