@@ -22,20 +22,15 @@ export default class BaseShape extends BaseObject {
   }
 
   render(context) {
-    const rotation = this.rotation + Math.PI / 2;
-
     // ship painted
-    const shapes = this.shipShape();
-    const pivot = {x: this.x, y: this.y};
+    const shapes = this.getProjection();
 
     for (let shape of shapes) {
-      const points = shape.points.map(p => ({x: p.x * this.scaleShape, y: p.y * this.scaleShape}));
+      const points = shape.points;
       context.beginPath();
-      let position = getPointByVectorRotation(points[0], pivot, rotation);
-      context.moveTo(scale(position.x), scale(position.y));
+      context.moveTo(scale(points[0].x), scale(points[0].y));
       for (let i = 1; i < points.length; i++) {
-        let position = getPointByVectorRotation(points[i], pivot, rotation);
-        context.lineTo(scale(position.x), scale(position.y));
+        context.lineTo(scale(points[i].x), scale(points[i].y));
       }
       context.closePath();
       context.fillStyle = shape.background;
@@ -44,13 +39,30 @@ export default class BaseShape extends BaseObject {
   }
 
   /**
+   * @return {{points: {x: number, y: number}[], background: string}[]}
+   */
+  getProjection() {
+    const rotation = this.rotation + Math.PI / 2;
+
+    const shapes = this.shipShape();
+    const pivot = {x: this.x, y: this.y};
+
+    const projectedShape = [];
+
+    for (let shape of shapes) {
+      const points = shape.points.map(p => ({x: p.x * this.scaleShape, y: p.y * this.scaleShape}));
+      for (let i = 0; i < points.length; i++) {
+        points[i] = getPointByVectorRotation(points[i], pivot, rotation);
+      }
+      projectedShape.push({...shape, points});
+    }
+    return projectedShape;
+  }
+
+  /**
    * @returns {[]}
    */
   shipShape() {
-    return [];
-  }
-
-  getProjection() {
     return [];
   }
 }

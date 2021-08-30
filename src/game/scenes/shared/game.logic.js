@@ -1,4 +1,4 @@
-import {randomNumber, rotateVector} from "../../utils/helpers";
+import {detectCollision, randomNumber, rotateVector} from "../../utils/helpers";
 import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../game";
 import Observable from "../../utils/observable";
 import {SHIP_PADDING_Y} from "../play.scene";
@@ -7,6 +7,7 @@ const SHIP_ACCELERATING = "0";
 const SHIP_DECELERATING = "1";
 const SHIP_STOP = "3";
 const SHIP_ROTATING = "4";
+const SHIP_DIE = "5";
 
 const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
@@ -37,10 +38,45 @@ export default class GameLogic {
    * run an iteration of the game logic
    */
   play() {
-    this.time++;
-    this.moveShip();
-    this.updateComponents();
-    this.afterPlay.emit(this.ship);
+    if (this.ship.status !== SHIP_DIE) {
+      this.time++;
+      this.moveShip();
+      this.updateComponents();
+      this.afterPlay.emit(this.ship);
+      this.checkCollision();
+    }
+  }
+
+  checkCollision() {
+    const shapes = this.ship.component.getProjection();
+    for(let enemy of this.enemies) {
+      const enemyShapes = enemy.component.getProjection();
+      if (this.checkCollisionInProjections(shapes, enemyShapes)) {
+        this.ship.status = SHIP_DIE;
+      }
+    }
+    for(let obj of this.objects) {
+      const objShapes = obj.component.getProjection();
+      if (this.checkCollisionInProjections(shapes, objShapes)) {
+        this.ship.status = SHIP_DIE;
+      }
+    }
+  }
+
+  /**
+   * @param shapes1 {{points: {x: number, y: number}[], background: string}[]}
+   * @param shapes2 {{points: {x: number, y: number}[], background: string}[]}
+   * @return {boolean}
+   */
+  checkCollisionInProjections(shapes1, shapes2) {
+    for (let s1 of shapes1) {
+      for (let s2 of shapes2) {
+        if (detectCollision(s1.points, s2.points)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
