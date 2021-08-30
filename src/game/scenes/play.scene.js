@@ -12,6 +12,7 @@ import GameLogic from "./shared/game.logic";
 import {scale} from "../utils/helpers";
 import Score from "../components/score";
 import Space from "../components/space";
+import shape3 from '../shapes/ship3.json';
 
 export const SHIP_PADDING_Y = 80;
 export const TOUCH_AREA_SIZE = 200;
@@ -140,6 +141,7 @@ export default class ScenePlay extends Scene {
 
   createEnemy() {
     const ship = new Ship(this.eventEmitter, 0, -SCREEN_HEIGHT, 30, 35);
+    ship.shape = shape3;
     ship.rotation = Math.PI * 3 / 2;
     ship.backgroundColor = "#f00";
     this.playableElements.push(ship);
