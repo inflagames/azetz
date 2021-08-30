@@ -12,6 +12,8 @@ const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
 const TIME_TO_ROTATE_SHIP_MS = 400;
 
+const ME_ROTATION = Math.PI / 80;
+
 export default class GameLogic {
   constructor() {
     this.time = 0;
@@ -28,6 +30,7 @@ export default class GameLogic {
       component: undefined
     };
     this.enemies = [];
+    this.objects = [];
   }
 
   /**
@@ -54,6 +57,26 @@ export default class GameLogic {
   }
 
   /**
+   * @param meteorite {Meteorite}
+   */
+  createMeteorite(meteorite) {
+    const xPosition = randomNumber(SCREEN_WIDTH - SHIP_PADDING_Y * 2, SHIP_PADDING_Y)
+    this.objects.push({
+      x: xPosition,
+      y: SCREEN_HEIGHT + this.ship.y + 100,
+      rotation: 0,
+      component: meteorite
+    });
+  }
+
+  /**
+   * @param id {number}
+   */
+  removeObject(id) {
+    this.objects = this.objects.filter(obj => obj.component.id !== id);
+  }
+
+  /**
    * @param id {number}
    */
   removeEnemy(id) {
@@ -71,6 +94,11 @@ export default class GameLogic {
     this.enemies.forEach(enemy => {
       enemy.component.updateCoordinates(enemy.x, SCREEN_HEIGHT - (enemy.y - this.ship.y));
       enemy.component.rotation = enemy.rotation;
+    });
+
+    this.objects.forEach(obj => {
+      obj.component.updateCoordinates(obj.x, SCREEN_HEIGHT - (obj.y - this.ship.y));
+      obj.component.rotation += ME_ROTATION;
     });
   }
 

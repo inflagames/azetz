@@ -14,6 +14,7 @@ import Score from "../components/score";
 import Space from "../components/space";
 import shape3 from '../shapes/ship3.json';
 import shape4 from '../shapes/ship4.json';
+import Meteorite from "../components/meteorite";
 
 export const SHIP_PADDING_Y = 80;
 export const TOUCH_AREA_SIZE = 200;
@@ -137,16 +138,23 @@ export default class ScenePlay extends Scene {
     if (value !== this.flag) {
       this.flag = value;
       this.createEnemy();
+      this.createMeteorite();
     }
   }
 
   createEnemy() {
     const ship = new Ship(this.eventEmitter, 0, -SCREEN_HEIGHT, 30, 35);
+    // toDo guille 30.08.21: improve this
     ship.shape = randomNumber(2) ? shape3 : shape4;
     ship.rotation = Math.PI * 3 / 2;
-    ship.backgroundColor = "#f00";
     this.playableElements.push(ship);
     this.currentGame.createEnemy(ship);
+  }
+
+  createMeteorite() {
+    const meteorite = new Meteorite(this.eventEmitter, 0, -SCREEN_HEIGHT, 50);
+    this.playableElements.push(meteorite);
+    this.currentGame.createMeteorite(meteorite);
   }
 
   renderOrRemovePlayableElements(context) {
@@ -157,6 +165,7 @@ export default class ScenePlay extends Scene {
       } else {
         toRemove.add(element.id);
         this.currentGame.removeEnemy(element.id);
+        this.currentGame.removeObject(element.id);
       }
     }
     this.playableElements = this.playableElements.filter(ele => !toRemove.has(ele.id));

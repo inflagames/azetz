@@ -20,7 +20,6 @@ export const EVENT_RESIZE = "8";
 
 export const SCENE_MENU = 0;
 export const SCENE_GAME = 1;
-export const SCENE_FRACTAL = 2;
 
 export const FPS = 30;
 const intervalPerSecond = 1000 / FPS;

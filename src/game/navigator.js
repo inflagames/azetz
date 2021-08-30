@@ -1,12 +1,10 @@
 import {
   EVENT_RESIZE,
-  SCENE_FRACTAL,
   SCENE_GAME,
   SCENE_MENU,
   SCREEN_RATIO,
   SCREEN_WIDTH,
 } from "./game";
-import SceneFractal from "./scenes/fractals.scene";
 import Menu from "./scenes/menu.scene";
 import ScenePlay from "./scenes/play.scene";
 import Observable from "./utils/observable";
@@ -22,7 +20,6 @@ export default class Navigator {
     this.sceneClasses = new Map();
     this.sceneClasses.set(SCENE_MENU, Menu);
     this.sceneClasses.set(SCENE_GAME, ScenePlay);
-    this.sceneClasses.set(SCENE_FRACTAL, SceneFractal);
     this.scenesInstances = new Map();
     /** @member {Scene} */
     this.currentScene = null;
