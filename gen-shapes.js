@@ -1,9 +1,12 @@
 const fs = require("fs");
-const path = require("path");
+
+/**
+ * This script generate the models used in the application given the svg
+ */
 
 if (process.argv.length > 2) {
   const filePath = process.argv[2];
-  const resultFile = path.join(__dirname, process.argv[3] || "result.json");
+  const resultFile = process.argv[3] || "result.json";
   const file = fs.readFileSync(filePath, {encoding: "utf8"});
 
   fs.writeFileSync(resultFile, JSON.stringify(extractPath(file), null, '  '));
@@ -79,6 +82,7 @@ function extractMesh(d) {
   for (let i=0;i< values.length;) {
     let sn = [];
     let lp = points.length > 0 ? points[points.length - 1] : null;
+    const op = values[i];
     switch (values[i]) {
       case 'l':
       case 'L':
@@ -86,8 +90,6 @@ function extractMesh(d) {
       case 'm':
         // line to; todo: this can be improve
         // move to
-        // m 107.90441,153.47225 8.30323,-2.43043 0.38303,-6.32265 -8.81989,4.6104 z
-        const op = values[i];
         i++;
         sn = [];
         while (/^-?\d.*/.test(values[i])) {
@@ -109,26 +111,18 @@ function extractMesh(d) {
         i++;
         break;
       case 'h':
-        i++;
-        sn = getPoint(values[i]);
-        points.push({x: lp.x + sn[0], y: lp.y});
-        break;
       case 'H':
         // horizontal movement
         i++;
         sn = getPoint(values[i]);
-        points.push({x: sn[0], y: lp.y});
+        points.push({x: sn[0] + (op === 'h' ? lp.x : 0), y: lp.y});
         break;
       case 'v':
-        i++;
-        sn = getPoint(values[i]);
-        points.push({x: lp.x, y: lp.y + sn[0]});
-        break;
       case 'V':
         // vertical movement
         i++;
         sn = getPoint(values[i]);
-        points.push({x: lp.x, y: sn[0]});
+        points.push({x: lp.x, y: sn[0] + (op === 'v' ? lp.y : 0)});
         break;
       case 'C':
       case 'c':
@@ -147,7 +141,7 @@ function extractMesh(d) {
         i++;
         break;
       default:
-        // get point
+        // consume
         i++;
     }
   }
