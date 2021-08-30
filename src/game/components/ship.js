@@ -2,7 +2,7 @@ import BaseObject from "./shared/base-object";
 import {rotateVector, scale} from "../utils/helpers";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
 import {SHIP_PADDING_Y, TOUCH_AREA_SIZE} from "../scenes/play.scene";
-import shapes from '../shapes/ship3.json';
+import shape2 from '../shapes/ship2.json';
 
 /**
  * This component didn't render anything, it is only used for create a touching area in the game
@@ -17,6 +17,7 @@ export class TouchArea extends BaseObject {
    */
   constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
     super(eventEmitter, x, y, width, height);
+    this.shape = shape2;
   }
 
   render(context) {
@@ -91,7 +92,7 @@ export default class Ship extends BaseObject {
   }
 
   shipShape() {
-    return shapes;
+    return this.shape || shape2;
   }
 
   /**
