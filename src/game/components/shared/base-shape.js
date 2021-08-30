@@ -49,4 +49,8 @@ export default class BaseShape extends BaseObject {
   shipShape() {
     return [];
   }
+
+  getProjection() {
+    return [];
+  }
 }
