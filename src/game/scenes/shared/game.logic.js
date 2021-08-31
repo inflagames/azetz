@@ -28,6 +28,7 @@ export default class GameLogic {
       rotation: Math.PI / 2,
       expectedRotation: 0,
       velocity: 0,
+      minVelocity: 10,
       acceleration: 20,
       deceleration: -1.5,
       status: [SHIP_STOP],
@@ -219,10 +220,7 @@ export default class GameLogic {
     }
     if (this.shipStatus() === SHIP_DECELERATING) {
       velocity = this.ship.velocity + (this.ship.deceleration * FPS) / 1000;
-      if (velocity <= 0) {
-        this.ship.status = [SHIP_STOP];
-        velocity = 0;
-      }
+      velocity = Math.max(velocity, this.ship.minVelocity);
     }
     this.ship.velocity = velocity;
   }

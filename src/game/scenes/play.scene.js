@@ -38,7 +38,7 @@ const isMobileMethod = {
 };
 export const isMobile = isMobileMethod.any();
 
-export const SHIP_PADDING_Y = 80;
+export const SHIP_PADDING_Y = 100;
 const SCORE_MARGIN = 10;
 
 export default class ScenePlay extends Scene {
@@ -135,7 +135,7 @@ export default class ScenePlay extends Scene {
     this.cleanCanvas(context);
 
     // draw ship flight line
-    this.drawFlightLine(context);
+    // this.drawFlightLine(context);
 
     if (!this.currentGame.isFighting()) {
       this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
@@ -198,9 +198,15 @@ export default class ScenePlay extends Scene {
    * @returns {number}
    */
   calculateShipRotation(position) {
-    return position ?
-      Math.atan2((SCREEN_HEIGHT - SHIP_PADDING_Y) - position.y, position.x - this.ship.x) :
-      Math.PI / 2;
+    if (position) {
+      const angle = Math.PI / 6;
+      const rotation = Math.atan2((SCREEN_HEIGHT - SHIP_PADDING_Y) - position.y, position.x - this.ship.x);
+      if (rotation >= 0) {
+        return Math.min(Math.PI - angle, Math.max(angle, rotation));
+      }
+      return -rotation < Math.PI / 2 ? angle : Math.PI - angle;
+    }
+    return Math.PI / 2;
   }
 
   /**
