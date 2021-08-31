@@ -75,6 +75,10 @@ export default class ScenePlay extends Scene {
   }
 
   initGame() {
+    // last object creation
+    this.createNextObject = 0;
+    this.createNextShip = 0;
+
     // game logic
     this.currentGame = new GameLogic();
 
@@ -161,11 +165,13 @@ export default class ScenePlay extends Scene {
   }
 
   createEnemyByTime() {
-    const value = Math.floor(this.currentGame.ship.y / 300);
-    if (value !== this.flag) {
-      this.flag = value;
-      this.createEnemy();
+    if (this.createNextObject < this.currentGame.ship.y) {
+      this.createNextObject = this.currentGame.ship.y + randomNumber(100, 200);
       this.createMeteorite();
+    }
+    if (this.createNextShip < this.currentGame.ship.y) {
+      this.createNextShip = this.currentGame.ship.y + randomNumber(100, 200);
+      this.createEnemy();
     }
   }
 
@@ -173,7 +179,7 @@ export default class ScenePlay extends Scene {
     const ship = new Ship(this.eventEmitter, 0, -SCREEN_HEIGHT, 30, 35);
     // toDo guille 30.08.21: improve this
     ship.shape = randomNumber(2) ? shape3 : shape4;
-    ship.rotation = Math.PI * 3 / 2;
+    ship.rotation = (Math.PI * 3) / 2;
     this.playableElements.push(ship);
     this.currentGame.createEnemy(ship);
   }
