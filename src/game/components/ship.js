@@ -14,9 +14,11 @@ export default class Ship extends BaseShape {
     /** @member {number} */
     this.rotation = Math.PI / 2;
     this.backgroundColor = "#00f";
-    this.scaleShape = 4;
+    this.scaleShape = 10;
 
     this.updateCoordinates();
+
+    this.brakeShapes();
   }
 
   updateCoordinates(x, y) {
@@ -25,7 +27,7 @@ export default class Ship extends BaseShape {
   }
 
   shipShape() {
-    return this.shape || shape2;
+    return this.brakedShape || this.shape || shape2;
   }
 
 }

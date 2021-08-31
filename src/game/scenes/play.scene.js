@@ -201,7 +201,7 @@ export default class ScenePlay extends Scene {
         this.currentGame.removeObject(element.id);
       }
     }
-    this.playableElements = this.playableElements.filter(ele => !toRemove.has(ele.id));
+    this.playableElements = this.playableElements.filter((ele) => !toRemove.has(ele.id));
   }
 
   isElementVisible(element) {
