@@ -25,7 +25,7 @@ export default class Ship extends BaseShape {
   }
 
   shipShape() {
-    return this.shape || shape2;
+    return this.brakedShape || this.shape || shape2;
   }
 
 }

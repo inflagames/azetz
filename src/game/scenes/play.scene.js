@@ -185,7 +185,7 @@ export default class ScenePlay extends Scene {
   }
 
   createMeteorite() {
-    const meteorite = new Meteorite(this.eventEmitter, 0, -SCREEN_HEIGHT, 50);
+    const meteorite = new Meteorite(this.eventEmitter, 0, -SCREEN_HEIGHT, 11);
     this.playableElements.push(meteorite);
     this.currentGame.createMeteorite(meteorite);
   }
@@ -201,7 +201,7 @@ export default class ScenePlay extends Scene {
         this.currentGame.removeObject(element.id);
       }
     }
-    this.playableElements = this.playableElements.filter(ele => !toRemove.has(ele.id));
+    this.playableElements = this.playableElements.filter((ele) => !toRemove.has(ele.id));
   }
 
   isElementVisible(element) {

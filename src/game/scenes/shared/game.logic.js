@@ -7,6 +7,7 @@ const SHIP_DECELERATING = "1";
 const SHIP_STOP = "3";
 const SHIP_ROTATING = "4";
 const SHIP_DIE = "5";
+const SHIP_DIE_ANIMATION = "6";
 
 const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
@@ -42,13 +43,18 @@ export default class GameLogic {
    * run an iteration of the game logic
    */
   play() {
-    if (this.ship.status !== SHIP_DIE) {
+    if (!this.isFinish() && this.shipStatus() !== SHIP_DIE_ANIMATION) {
       this.time++;
       this.moveShip();
       this.updateComponents();
       this.updateSpaces();
       this.updateScore();
       this.checkCollision();
+    } else if (this.ship.status === SHIP_DIE_ANIMATION) {
+      this.time++;
+      if (this.time > 20) {
+        this.ship.status = SHIP_DIE;
+      }
     }
   }
 
@@ -62,17 +68,25 @@ export default class GameLogic {
 
   checkCollision() {
     const shapes = this.ship.component.getProjection();
+    let component;
     for (const enemy of this.enemies) {
       const enemyShapes = enemy.component.getProjection();
       if (this.checkCollisionInProjections(shapes, enemyShapes)) {
-        this.ship.status = SHIP_DIE;
+        this.ship.status = SHIP_DIE_ANIMATION;
+        component = enemy.component;
       }
     }
     for (const obj of this.objects) {
       const objShapes = obj.component.getProjection();
       if (this.checkCollisionInProjections(shapes, objShapes)) {
-        this.ship.status = SHIP_DIE;
+        this.ship.status = SHIP_DIE_ANIMATION;
+        component = obj.component;
       }
+    }
+    if (this.ship.status === SHIP_DIE_ANIMATION) {
+      component.brakeShapes();
+      this.ship.component.brakeShapes();
+      this.time = 0;
     }
   }
 

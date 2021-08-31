@@ -17,13 +17,13 @@ export default class Meteorite extends BaseShape {
   }
 
   shipShape() {
-    return this.shape;
+    return this.brakedShape || this.shape;
   }
 
   generateShape() {
     let points = [];
     const startPoints = 6;
-    const iterations = 5;
+    const iterations = 4;
     const angle = (Math.PI * 2) / startPoints;
     for (let i = 0; i < startPoints; i++) {
       points.push(rotateVector({x: this.width / 2, y: 0}, angle * i));
