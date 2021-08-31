@@ -1,34 +1,29 @@
 import Navigator from "./navigator";
 import Observable from "./utils/observable";
 import { unscale } from "./utils/helpers";
+import {
+  SCREEN_WIDTH,
+  SCREEN_RATIO,
+  SCENE_GAME,
+  STOP,
+  EVENT_CLICK,
+  EVENT_MOUSEDOWN,
+  EVENT_MOUSEUP,
+  EVENT_MOUSEOUT,
+  EVENT_MOUSELEAVE,
+  EVENT_MOUSEMOVE,
+  EVENT_TOUCHDOWN,
+  EVENT_TOUCHUP,
+  EVENT_TOUCHCANCEL,
+  EVENT_TOUCHMOVE,
+  EVENT_RESIZE,
+  RUNNING,
+  FPS,
+} from "./utils/variables";
 
-export const RUNNING = 1;
-export const PAUSE = 2;
-export const STOP = 3;
-
-export const EVENT_CLICK = "0";
-export const EVENT_MOUSEDOWN = "1";
-export const EVENT_MOUSEUP = "2";
-export const EVENT_MOUSEMOVE = "3";
-export const EVENT_MOUSEOUT = "8";
-export const EVENT_MOUSELEAVE = "9";
-export const EVENT_TOUCHDOWN = "4";
-export const EVENT_TOUCHUP = "5";
-export const EVENT_TOUCHMOVE = "6";
-export const EVENT_TOUCHCANCEL = "7";
-export const EVENT_RESIZE = "8";
-
-export const SCENE_MENU = 0;
-export const SCENE_GAME = 1;
-
-export const FPS = 30;
 const intervalPerSecond = 1000 / FPS;
 
 let gameInstance = null;
-
-export const SCREEN_RATIO = 16 / 9;
-export const SCREEN_WIDTH = 500;
-export const SCREEN_HEIGHT = SCREEN_WIDTH * SCREEN_RATIO;
 
 export default class Game {
   constructor() {

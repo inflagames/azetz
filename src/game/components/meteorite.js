@@ -24,7 +24,7 @@ export default class Meteorite extends BaseShape {
     let points = [];
     const startPoints = 6;
     const iterations = 5;
-    const angle = Math.PI * 2 / startPoints;
+    const angle = (Math.PI * 2) / startPoints;
     for (let i = 0; i < startPoints; i++) {
       points.push(rotateVector({x: this.width / 2, y: 0}, angle * i));
     }
@@ -47,7 +47,7 @@ export default class Meteorite extends BaseShape {
     const factor = randomNumber(3, -1) / 7;
     return {
       x: mp.x + v2.x * factor,
-      y: mp.y + v2.y * factor
+      y: mp.y + v2.y * factor,
     };
   }
 }

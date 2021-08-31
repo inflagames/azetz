@@ -1,4 +1,4 @@
-import {SCREEN_WIDTH} from "../game";
+import {SCREEN_WIDTH} from "./variables";
 
 /**
  * @param vector {{x: number, y: number}}

@@ -1,7 +1,6 @@
 import BaseObject from "./shared/base-object";
-import {scale} from "../utils/helpers";
-import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../game";
-import {randomNumber} from "../utils/helpers";
+import {scale,randomNumber} from "../utils/helpers";
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../utils/variables";
 
 export class Star extends BaseObject {
   /**
@@ -20,7 +19,10 @@ export class Star extends BaseObject {
   render(context) {
     context.beginPath();
     context.fillStyle = "rgba(255,255,255,0.4)";
-    context.arc(scale(this.x), scale(this.y + this.shipY - this.group * SCREEN_HEIGHT), scale(this.width), 0, Math.PI * 2);
+    context.arc(
+      scale(this.x),
+      scale(this.y + this.shipY - this.group * SCREEN_HEIGHT),
+      scale(this.width), 0, Math.PI * 2);
     context.fill();
   }
 }
@@ -71,7 +73,7 @@ export default class Space extends BaseObject {
     let removeGroup = false;
     for (let i = 0; i < this.stars.length; i++) {
       let visible = false;
-      this.stars[i].forEach(star => {
+      this.stars[i].forEach((star) => {
         if (this.isVisibleStar(star)) {
           star.shipY = this.shipY;
           star.render(context);

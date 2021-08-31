@@ -1,5 +1,5 @@
 import {detectCollision, randomNumber, rotateVector,} from "../../utils/helpers";
-import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../game";
+import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/variables";
 import {SHIP_PADDING_Y} from "../play.scene";
 
 const SHIP_ACCELERATING = "0";
@@ -53,7 +53,7 @@ export default class GameLogic {
   }
 
   updateSpaces() {
-    this.spaces.forEach(space => space.setShipPosition(this.ship.y));
+    this.spaces.forEach((space) => space.setShipPosition(this.ship.y));
   }
 
   updateScore() {

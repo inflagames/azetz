@@ -4,7 +4,7 @@ import {
   SCENE_MENU,
   SCREEN_RATIO,
   SCREEN_WIDTH,
-} from "./game";
+} from "./utils/variables";
 import Menu from "./scenes/menu.scene";
 import ScenePlay from "./scenes/play.scene";
 import Observable from "./utils/observable";

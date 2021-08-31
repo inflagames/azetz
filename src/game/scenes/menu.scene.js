@@ -1,6 +1,6 @@
 import Scene from "./shared/scene";
 import Button from "../components/button";
-import {EVENT_CLICK, SCENE_GAME} from "../game";
+import {EVENT_CLICK, SCENE_GAME} from "../utils/variables";
 
 export default class SceneMenu extends Scene {
   /**

@@ -1,5 +1,5 @@
 import {filterObservable} from "../../utils/observable";
-import {EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../game";
+import {EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../utils/variables";
 
 export default class BaseObject {
   /**

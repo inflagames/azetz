@@ -22,7 +22,7 @@ export default class Score extends BaseObject {
    */
   render(context) {
     context.font = `${scale(this.textSize)}px Arial`;
-    let metrics = context.measureText(this.score + '');
+    const metrics = context.measureText(this.score + "");
     const textWidth = metrics.width;
     const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     const padding = 5;
@@ -32,7 +32,8 @@ export default class Score extends BaseObject {
       scale(this.x - textWidth - padding * 2),
       scale(this.y),
       scale(textWidth + padding * 2),
-      scale(textHeight + padding * 2));
+      scale(textHeight + padding * 2)
+    );
     context.fillStyle = this.backgroundColor;
     context.fill();
 
@@ -40,7 +41,7 @@ export default class Score extends BaseObject {
     context.font = `${scale(this.textSize)}px Arial`;
     context.fillStyle = this.textColor;
     context.fillText(
-      this.score + '',
+      this.score + "",
       scale(this.x - textWidth - padding),
       scale(this.y + textHeight + padding)
     );

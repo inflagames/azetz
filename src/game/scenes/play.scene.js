@@ -6,14 +6,14 @@ import {
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
   EVENT_TOUCHUP, SCENE_MENU,
   SCREEN_HEIGHT, SCREEN_WIDTH
-} from "../game";
+} from "../utils/variables";
 import Ship from "../components/ship";
 import GameLogic from "./shared/game.logic";
 import {randomNumber, scale} from "../utils/helpers";
 import Score from "../components/score";
 import Space from "../components/space";
-import shape3 from '../shapes/ship3.json';
-import shape4 from '../shapes/ship4.json';
+import shape3 from "../shapes/ship3.json";
+import shape4 from "../shapes/ship4.json";
 import Meteorite from "../components/meteorite";
 
 const isMobileMethod = {
@@ -30,10 +30,19 @@ const isMobileMethod = {
     return navigator.userAgent.match(/Opera Mini/i);
   },
   Windows: function () {
-    return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+    return (
+      navigator.userAgent.match(/IEMobile/i) ||
+      navigator.userAgent.match(/WPDesktop/i)
+    );
   },
   any: function () {
-    return (isMobileMethod.Android() || isMobileMethod.BlackBerry() || isMobileMethod.iOS() || isMobileMethod.Opera() || isMobileMethod.Windows());
+    return (
+      isMobileMethod.Android() ||
+      isMobileMethod.BlackBerry() ||
+      isMobileMethod.iOS() ||
+      isMobileMethod.Opera() ||
+      isMobileMethod.Windows()
+    );
   }
 };
 export const isMobile = isMobileMethod.any();
@@ -177,7 +186,7 @@ export default class ScenePlay extends Scene {
 
   renderOrRemovePlayableElements(context) {
     const toRemove = new Set();
-    for (let element of this.playableElements) {
+    for (const element of this.playableElements) {
       if (this.isElementVisible(element)) {
         element.render(context);
       } else {
@@ -190,7 +199,7 @@ export default class ScenePlay extends Scene {
   }
 
   isElementVisible(element) {
-    return element.y - (element.height * 2) < SCREEN_HEIGHT;
+    return element.y - element.height * 2 < SCREEN_HEIGHT;
   }
 
   /**
@@ -224,6 +233,6 @@ export default class ScenePlay extends Scene {
   }
 
   cleanCanvas(context) {
-    this.spaces.forEach(space => space.render(context));
+    this.spaces.forEach((space) => space.render(context));
   }
 }
