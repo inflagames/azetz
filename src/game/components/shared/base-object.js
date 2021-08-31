@@ -50,7 +50,7 @@ export default class BaseObject {
    */
   validateEventPropagation(position, event) {
     if (event === EVENT_TOUCHUP || event === EVENT_MOUSEOUT ||
-      event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE){
+      event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE) {
       return true;
     }
     return position && position.x >= this.x &&

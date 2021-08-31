@@ -33,18 +33,31 @@ export default class Space extends BaseObject {
    * @param width {number}
    * @param height {number}
    * @param ratio {number}
+   * @param velocity {number}
+   * @param background {string}
    */
-  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0, ratio) {
+  constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0,
+              ratio, velocity = 1, background = "") {
     super(eventEmitter, x, y, width, height);
-    this.backgroundColor = "rgba(0,0,0,0.96)";
+    this.backgroundColor = background;
     this.shipY = 0;
     /** @member {Star[][]} */
     this.stars = [];
     this.groupCount = 0;
     this.ratio = ratio;
+    this.velocity = velocity;
 
+    // visible space
     this.generateSpace();
+    // next space
     this.generateSpace();
+  }
+
+  /**
+   * @param y {number}
+   */
+  setShipPosition(y) {
+    this.shipY = y / this.velocity;
   }
 
   render(context) {
@@ -56,7 +69,7 @@ export default class Space extends BaseObject {
     }
 
     let removeGroup = false;
-    for (let i=0;i < this.stars.length;i++) {
+    for (let i = 0; i < this.stars.length; i++) {
       let visible = false;
       this.stars[i].forEach(star => {
         if (this.isVisibleStar(star)) {
@@ -90,6 +103,6 @@ export default class Space extends BaseObject {
    */
   isVisibleStar(star) {
     const starY = star.y + this.shipY - star.group * SCREEN_HEIGHT;
-    return  starY >= 0 && starY < SCREEN_HEIGHT;
+    return starY >= 0 && starY < SCREEN_HEIGHT;
   }
 }

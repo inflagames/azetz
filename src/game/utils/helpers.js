@@ -28,6 +28,7 @@ export function getVector(p1, p2) {
 }
 
 export function distance(p1, p2) {
+  // toDo guille 31.08.21: maybe it can be improved (check it)
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 

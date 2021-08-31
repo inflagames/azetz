@@ -1,7 +1,6 @@
 import BaseShape from "./shared/base-shape";
 import shape2 from '../shapes/ship2.json';
 
-
 export default class Ship extends BaseShape {
   /**
    * @param eventEmitter {Observable}

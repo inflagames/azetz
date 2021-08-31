@@ -1,6 +1,5 @@
-import {detectCollision, randomNumber, rotateVector} from "../../utils/helpers";
+import {detectCollision, randomNumber, rotateVector,} from "../../utils/helpers";
 import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../game";
-import Observable from "../../utils/observable";
 import {SHIP_PADDING_Y} from "../play.scene";
 
 const SHIP_ACCELERATING = "0";
@@ -17,8 +16,12 @@ const ME_ROTATION = Math.PI / 80;
 
 export default class GameLogic {
   constructor() {
+    /** @member {Score} */
+    this.score = null;
+    /** @member {Space[]} */
+    this.spaces = [];
     this.time = 0;
-    this.afterPlay = new Observable();
+
     this.ship = {
       x: SCREEN_WIDTH / 2,
       y: 0,
@@ -28,7 +31,7 @@ export default class GameLogic {
       acceleration: 20,
       deceleration: -1.5,
       status: [SHIP_STOP],
-      component: undefined
+      component: undefined,
     };
     this.enemies = [];
     this.objects = [];
@@ -42,20 +45,29 @@ export default class GameLogic {
       this.time++;
       this.moveShip();
       this.updateComponents();
-      this.afterPlay.emit(this.ship);
+      this.updateSpaces();
+      this.updateScore();
       this.checkCollision();
     }
   }
 
+  updateSpaces() {
+    this.spaces.forEach(space => space.setShipPosition(this.ship.y));
+  }
+
+  updateScore() {
+    this.score.score = Math.floor(this.ship.y / 50);
+  }
+
   checkCollision() {
     const shapes = this.ship.component.getProjection();
-    for(let enemy of this.enemies) {
+    for (const enemy of this.enemies) {
       const enemyShapes = enemy.component.getProjection();
       if (this.checkCollisionInProjections(shapes, enemyShapes)) {
         this.ship.status = SHIP_DIE;
       }
     }
-    for(let obj of this.objects) {
+    for (const obj of this.objects) {
       const objShapes = obj.component.getProjection();
       if (this.checkCollisionInProjections(shapes, objShapes)) {
         this.ship.status = SHIP_DIE;
@@ -69,8 +81,8 @@ export default class GameLogic {
    * @return {boolean}
    */
   checkCollisionInProjections(shapes1, shapes2) {
-    for (let s1 of shapes1) {
-      for (let s2 of shapes2) {
+    for (const s1 of shapes1) {
+      for (const s2 of shapes2) {
         if (detectCollision(s1.points, s2.points)) {
           return true;
         }
@@ -83,12 +95,15 @@ export default class GameLogic {
    * @param ship {Ship}
    */
   createEnemy(ship) {
-    const xPosition = randomNumber(SCREEN_WIDTH - SHIP_PADDING_Y * 2, SHIP_PADDING_Y)
+    const xPosition = randomNumber(
+      SCREEN_WIDTH - SHIP_PADDING_Y * 2,
+      SHIP_PADDING_Y
+    );
     this.enemies.push({
       x: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
-      rotation: Math.PI * 3 / 2,
-      component: ship
+      rotation: (Math.PI * 3) / 2,
+      component: ship,
     });
   }
 
@@ -96,12 +111,15 @@ export default class GameLogic {
    * @param meteorite {Meteorite}
    */
   createMeteorite(meteorite) {
-    const xPosition = randomNumber(SCREEN_WIDTH - SHIP_PADDING_Y * 2, SHIP_PADDING_Y)
+    const xPosition = randomNumber(
+      SCREEN_WIDTH - SHIP_PADDING_Y * 2,
+      SHIP_PADDING_Y
+    );
     this.objects.push({
       x: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
       rotation: 0,
-      component: meteorite
+      component: meteorite,
     });
   }
 
@@ -109,14 +127,14 @@ export default class GameLogic {
    * @param id {number}
    */
   removeObject(id) {
-    this.objects = this.objects.filter(obj => obj.component.id !== id);
+    this.objects = this.objects.filter((obj) => obj.component.id !== id);
   }
 
   /**
    * @param id {number}
    */
   removeEnemy(id) {
-    this.enemies = this.enemies.filter(enemy => enemy.component.id !== id);
+    this.enemies = this.enemies.filter((enemy) => enemy.component.id !== id);
   }
 
   /**
@@ -127,22 +145,21 @@ export default class GameLogic {
     this.ship.component.updateCoordinates(this.ship.x);
     this.ship.component.rotation = this.ship.rotation;
 
-    this.enemies.forEach(enemy => {
-      enemy.component.updateCoordinates(enemy.x, SCREEN_HEIGHT - (enemy.y - this.ship.y));
+    this.enemies.forEach((enemy) => {
+      enemy.component.updateCoordinates(
+        enemy.x,
+        SCREEN_HEIGHT - (enemy.y - this.ship.y)
+      );
       enemy.component.rotation = enemy.rotation;
     });
 
-    this.objects.forEach(obj => {
-      obj.component.updateCoordinates(obj.x, SCREEN_HEIGHT - (obj.y - this.ship.y));
+    this.objects.forEach((obj) => {
+      obj.component.updateCoordinates(
+        obj.x,
+        SCREEN_HEIGHT - (obj.y - this.ship.y)
+      );
       obj.component.rotation += ME_ROTATION;
     });
-  }
-
-  /**
-   * @param ship {Ship}
-   */
-  setShip(ship) {
-    this.ship.component = ship;
   }
 
   /**
@@ -170,11 +187,17 @@ export default class GameLogic {
 
   rotateShip() {
     if (this.shipStatus() === SHIP_ROTATING) {
-      const rotationFactor = 1000 / FPS * Math.PI / TIME_TO_ROTATE_SHIP_MS;
+      const rotationFactor = ((1000 / FPS) * Math.PI) / TIME_TO_ROTATE_SHIP_MS;
       if (this.ship.rotation > this.ship.expectedRotation) {
-        this.ship.rotation = Math.max(this.ship.rotation - rotationFactor, this.ship.expectedRotation);
+        this.ship.rotation = Math.max(
+          this.ship.rotation - rotationFactor,
+          this.ship.expectedRotation
+        );
       } else {
-        this.ship.rotation = Math.min(this.ship.rotation + rotationFactor, this.ship.expectedRotation);
+        this.ship.rotation = Math.min(
+          this.ship.rotation + rotationFactor,
+          this.ship.expectedRotation
+        );
       }
       // stop rotation
       if (this.ship.rotation === this.ship.expectedRotation) {
@@ -189,13 +212,13 @@ export default class GameLogic {
     }
     let velocity = 0;
     if (this.shipStatus() === SHIP_ACCELERATING) {
-      velocity = this.ship.velocity + this.ship.acceleration * FPS / 1000;
+      velocity = this.ship.velocity + (this.ship.acceleration * FPS) / 1000;
       if (velocity > MAX_VELOCITY) {
         this.ship.status = [SHIP_DECELERATING];
       }
     }
     if (this.shipStatus() === SHIP_DECELERATING) {
-      velocity = this.ship.velocity + this.ship.deceleration * FPS / 1000;
+      velocity = this.ship.velocity + (this.ship.deceleration * FPS) / 1000;
       if (velocity <= 0) {
         this.ship.status = [SHIP_STOP];
         velocity = 0;
@@ -217,13 +240,19 @@ export default class GameLogic {
   }
 
   wallCollision() {
-    if (this.shipStatus() !== SHIP_ROTATING &&
-      this.ship.rotation > Math.PI / 2 && this.ship.x < MARGIN_TO_COLLIDE) {
+    if (
+      this.shipStatus() !== SHIP_ROTATING &&
+      this.ship.rotation > Math.PI / 2 &&
+      this.ship.x < MARGIN_TO_COLLIDE
+    ) {
       this.ship.status.push(SHIP_ROTATING);
       this.ship.expectedRotation = Math.PI - this.ship.rotation;
     }
-    if (this.shipStatus() !== SHIP_ROTATING &&
-      this.ship.rotation < Math.PI / 2 && this.ship.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE) {
+    if (
+      this.shipStatus() !== SHIP_ROTATING &&
+      this.ship.rotation < Math.PI / 2 &&
+      this.ship.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE
+    ) {
       this.ship.status.push(SHIP_ROTATING);
       this.ship.expectedRotation = Math.PI - this.ship.rotation;
     }

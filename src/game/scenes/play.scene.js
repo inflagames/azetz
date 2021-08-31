@@ -39,7 +39,6 @@ const isMobileMethod = {
 export const isMobile = isMobileMethod.any();
 
 export const SHIP_PADDING_Y = 80;
-export const TOUCH_AREA_SIZE = 200;
 const SCORE_MARGIN = 10;
 
 export default class ScenePlay extends Scene {
@@ -49,6 +48,9 @@ export default class ScenePlay extends Scene {
    */
   constructor(navigator, eventEmitter) {
     super(navigator, eventEmitter);
+
+    /** @member {Space[]} */
+    this.spaces = [];
 
     // ship touch area component
     this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
@@ -64,15 +66,14 @@ export default class ScenePlay extends Scene {
   }
 
   initGame() {
-    // space background
-    // toDo guille 27.08.21: refactor this code
-    this.space = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3);
-    this.space2 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2);
-    this.space2.backgroundColor = null;
-    this.space3 = new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
-    this.space3.backgroundColor = null;
     // game logic
     this.currentGame = new GameLogic();
+
+    // space background
+    this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3, 1.1, "rgba(0,0,0,0.96)"));
+    this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2, 1.2));
+    this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1.5));
+    this.currentGame.spaces = this.spaces;
 
     // menu button
     const button = new Button(this.eventEmitter, 5, 7, 100, 30, "MENU");
@@ -83,19 +84,11 @@ export default class ScenePlay extends Scene {
     // ship component
     this.ship = new Ship(this.eventEmitter, SCREEN_WIDTH / 2,
       SCREEN_HEIGHT - SHIP_PADDING_Y, 30, 35);
+    this.currentGame.ship.component = this.ship;
 
     // score component
     const score = new Score(this.eventEmitter, SCREEN_WIDTH - SCORE_MARGIN, SCORE_MARGIN);
-
-    // subscribe to game-logic after play events
-    this.currentGame.afterPlay.on(ship => {
-      // update score
-      score.score = Math.floor(this.currentGame.ship.y / 50);
-
-      this.space.shipY = ship.y / 1.1;
-      this.space2.shipY = ship.y / 1.2;
-      this.space3.shipY = ship.y / 1.5;
-    });
+    this.currentGame.score = score;
 
     // add components to the element array
     this.elements = [this.ship];
@@ -104,9 +97,6 @@ export default class ScenePlay extends Scene {
 
     // elements of the game
     this.playableElements = [];
-
-    // link components with logic
-    this.currentGame.setShip(this.ship);
   }
 
   shipClickUp() {
@@ -152,7 +142,7 @@ export default class ScenePlay extends Scene {
     }
 
     // render scene elements
-    for (let element of this.elements) {
+    for (const element of this.elements) {
       element.render(context);
     }
 
@@ -228,8 +218,6 @@ export default class ScenePlay extends Scene {
   }
 
   cleanCanvas(context) {
-    this.space.render(context);
-    this.space2.render(context);
-    this.space3.render(context);
+    this.spaces.forEach(space => space.render(context));
   }
 }
