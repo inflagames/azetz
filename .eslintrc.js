@@ -20,7 +20,5 @@ module.exports = {
     "jest/no-identical-title": "error",
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
-    "space-in-brackets": ["error", "always"],
-    "object-curly-newline": "off",
   },
 };
