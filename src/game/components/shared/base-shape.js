@@ -1,5 +1,5 @@
 import BaseObject from "./base-object";
-import {getPointByVectorRotation, scale} from "../../utils/helpers";
+import {getPointByVectorRotation, randomNumber, scale} from "../../utils/helpers";
 
 export default class BaseShape extends BaseObject {
   /**
@@ -13,7 +13,7 @@ export default class BaseShape extends BaseObject {
     super(eventEmitter, x, y, width, height);
     this.backgroundColor = "#00f";
     this.rotation = 0;
-    this.scaleShape = 1;
+    this.scaleShape = 4;
     this.brakedShape = null;
   }
 
@@ -35,20 +35,39 @@ export default class BaseShape extends BaseObject {
       }
       context.closePath();
       context.fillStyle = shape.background;
+      if (!this.brakedShape) {
+        context.stroke();
+      } else {
+        // context.fillStyle = this.fireColor(shape.background);
+      }
       context.fill();
-      context.stroke();
     }
+
+    if (this.brakedShape) {
+      this.moveBrakePiece();
+    }
+  }
+
+  fireColor(initialColor) {
+    return [initialColor, "#fac000", "#ff7500", "#fc6400", "#d73502", "#b62203", "#801100"][randomNumber(7)];
   }
 
   brakeShapes() {
     const shapes = this.shipShape();
     this.brakedShape = [];
 
+    // brake in triangles
     for (const shape of shapes) {
       this.brakedShape = [...this.brakedShape, ...this.brakeShape(shape)];
     }
 
-    console.log(this.brakedShape);
+    // calculate direction vector
+    for (const shape of this.brakedShape) {
+      const cp = this.shapeCenter(shape.points);
+      const d = Math.random() + 0.5;
+      const factor = d / Math.sqrt(Math.pow(cp.x, 2) + Math.pow(cp.y, 2));
+      shape.vector = {x: cp.x * factor, y: cp.y * factor};
+    }
   }
 
   /**
@@ -56,21 +75,49 @@ export default class BaseShape extends BaseObject {
    * @return {{x: number, y: number}[]}
    */
   brakeShape(shape) {
-    const mp = {x: 0, y: 0};
-    for (const p of shape.points) {
-      mp.x += p.x;
-      mp.y += p.y;
-    }
+    const {min, max} = this.coverBox(shape.points);
 
+    const fixedSize = 2;
+    const size = 2.5;
     const newShapes = [];
-    for (let i = 1; i <= shape.points.length; i++) {
+    let count = Math.ceil((max.x - min.x) * (max.y - min.y) / fixedSize);
+    count = Math.min(count, 150);
+
+    for (let i = 0; i < count; i++) {
+      const pos = {x: (max.x - min.x) * Math.random() + min.x, y: (max.y - min.y) * Math.random() + min.y};
       newShapes.push({
-        points: [shape.points[i - 1], shape.points[i % shape.points.length], mp],
+        points: new Array(3).fill(null)
+          .map(() => ({x: pos.x + size * Math.random(), y: pos.y + size * Math.random()})),
         background: shape.background,
       });
     }
 
     return newShapes;
+  }
+
+  /**
+   * @param points {{x: number, y: number}[]}
+   */
+  shapeCenter(points) {
+    const {min, max} = this.coverBox(points);
+    return {x: (max.x + min.x) / 2, y: (max.y + min.y) / 2};
+  }
+
+  coverBox(points) {
+    const min = {x: points[0].x, y: points[0].y}, max = {...min};
+    for (let i = 1; i < points.length; i++) {
+      min.x = Math.min(min.x, points[i].x);
+      min.y = Math.min(min.y, points[i].y);
+      max.x = Math.max(max.x, points[i].x);
+      max.y = Math.max(max.y, points[i].y);
+    }
+    return {min, max};
+  }
+
+  moveBrakePiece() {
+    for (const shape of this.brakedShape) {
+      shape.points = shape.points.map(p => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
+    }
   }
 
   /**
