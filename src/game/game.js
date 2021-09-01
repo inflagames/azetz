@@ -1,6 +1,6 @@
 import Navigator from "./navigator";
 import Observable from "./utils/observable";
-import {unscale} from "./utils/helpers";
+import { unscale } from "./utils/helpers";
 import {
   SCREEN_WIDTH,
   SCREEN_RATIO,
@@ -110,7 +110,7 @@ export default class Game {
     window.currentWidth = calculatedWidth;
     this.eventEmitter.emit({
       event: EVENT_RESIZE,
-      dimension: {w: calculatedWidth, h: calculatedHeight},
+      dimension: { w: calculatedWidth, h: calculatedHeight },
     });
   }
 
@@ -133,7 +133,7 @@ export default class Game {
    * @param type {string}
    */
   clickEvent(event, type) {
-    this.emitPositionEvent({x: event?.clientX, y: event?.clientY}, type);
+    this.emitPositionEvent({ x: event?.clientX, y: event?.clientY }, type);
   }
 
   /**
