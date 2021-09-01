@@ -248,7 +248,10 @@ export default class GameLogic {
   }
 
   isShipClickable() {
-    return this.ship.status !== SHIP_ROTATING;
+    return [SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION].reduce(
+      (prev, currentStatus) => prev && this.ship.status !== currentStatus,
+      true
+    );
   }
 
   wallCollision() {

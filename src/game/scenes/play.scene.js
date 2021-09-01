@@ -140,7 +140,6 @@ export default class ScenePlay extends Scene {
     this.currentGame.play();
 
     if (this.currentGame.isFinish()) {
-      this.initGame();
       return;
     }
 
