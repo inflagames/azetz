@@ -116,8 +116,21 @@ export default class BaseShape extends BaseObject {
 
   moveBrakePiece() {
     for (const shape of this.brakedShape) {
-      shape.points = shape.points.map(p => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
+      shape.points = shape.points.map((p) => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
+      shape.background = this.reduceOpacity(shape.background, 30);
     }
+  }
+
+  /**
+   * @param color {string}
+   * @param extract {number}
+   * @returns {string}
+   */
+  reduceOpacity(color, extract) {
+    let alpha = color.length > 7 ? parseInt(color.substr(7, 2), 16) : 255;
+    alpha = Math.min(255, Math.max(alpha - extract, 0));
+    alpha = alpha.toString(16);
+    return `#${color.substr(1, 6)}${(alpha.length < 2 ? "0" : "") + alpha}`;
   }
 
   /**
