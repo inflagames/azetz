@@ -22,7 +22,6 @@ export const EVENT_TOUCHCANCEL = "7";
 export const EVENT_RESIZE = "8";
 
 // scene values
-export const SCENE_MENU = 0;
 export const SCENE_GAME = 1;
 
 export const FPS = 30;

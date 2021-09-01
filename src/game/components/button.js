@@ -1,5 +1,5 @@
 import BaseObject from "./shared/base-object";
-import {scale} from "../utils/helpers";
+import {scale, unscale} from "../utils/helpers";
 
 export default class Button extends BaseObject {
   /**
@@ -30,8 +30,8 @@ export default class Button extends BaseObject {
     context.beginPath();
     context.font = `${scale(this.textSize)}px Arial`;
     const metrics = context.measureText(this.text);
-    const textWidth = metrics.width;
-    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const textWidth = unscale(metrics.width);
+    const textHeight = unscale(metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
     context.fillStyle = this.textColor;
     context.fillText(
       this.text,

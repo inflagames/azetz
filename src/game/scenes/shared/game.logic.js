@@ -50,10 +50,13 @@ export default class GameLogic {
       this.updateSpaces();
       this.updateScore();
       this.checkCollision();
-    } else if (this.ship.status === SHIP_DIE_ANIMATION) {
+    } else if (this.shipStatus() === SHIP_DIE_ANIMATION) {
+      this.enemies.forEach((e) => e.component.moveBrakedPiece());
+      this.objects.forEach((o) => o.component.moveBrakedPiece());
+      this.ship.component.moveBrakedPiece();
       this.time++;
       if (this.time > 20) {
-        this.ship.status = SHIP_DIE;
+        this.ship.status = [SHIP_DIE];
       }
     }
   }
@@ -63,7 +66,14 @@ export default class GameLogic {
   }
 
   updateScore() {
-    this.score.score = Math.floor(this.ship.y / 50);
+    this.score.score = this.getScore();
+  }
+
+  /**
+   * @return {number}
+   */
+  getScore() {
+    return Math.floor(this.ship.y / 50);
   }
 
   checkCollision() {
@@ -72,18 +82,18 @@ export default class GameLogic {
     for (const enemy of this.enemies) {
       const enemyShapes = enemy.component.getProjection();
       if (this.checkCollisionInProjections(shapes, enemyShapes)) {
-        this.ship.status = SHIP_DIE_ANIMATION;
+        this.ship.status = [SHIP_DIE_ANIMATION];
         component = enemy.component;
       }
     }
     for (const obj of this.objects) {
       const objShapes = obj.component.getProjection();
       if (this.checkCollisionInProjections(shapes, objShapes)) {
-        this.ship.status = SHIP_DIE_ANIMATION;
+        this.ship.status = [SHIP_DIE_ANIMATION];
         component = obj.component;
       }
     }
-    if (this.ship.status === SHIP_DIE_ANIMATION) {
+    if (this.shipStatus() === SHIP_DIE_ANIMATION) {
       component.brakeShapes();
       this.ship.component.brakeShapes();
       this.time = 0;
@@ -240,7 +250,7 @@ export default class GameLogic {
   }
 
   isFighting() {
-    return this.shipStatus() !== SHIP_STOP;
+    return this.notMathStatus([SHIP_STOP]);
   }
 
   isFinish() {
@@ -248,8 +258,12 @@ export default class GameLogic {
   }
 
   isShipClickable() {
-    return [SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION].reduce(
-      (prev, currentStatus) => prev && this.ship.status !== currentStatus,
+    return this.notMathStatus([SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION]);
+  }
+
+  notMathStatus(statuses) {
+    return statuses.reduce(
+      (prev, status) => prev && this.shipStatus() !== status,
       true
     );
   }

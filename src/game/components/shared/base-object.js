@@ -1,5 +1,5 @@
 import {filterObservable} from "../../utils/observable";
-import {EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../utils/variables";
+import {EVENT_CLICK, EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../utils/variables";
 
 export default class BaseObject {
   /**
@@ -52,6 +52,9 @@ export default class BaseObject {
     if (event === EVENT_TOUCHUP || event === EVENT_MOUSEOUT ||
       event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE) {
       return true;
+    }
+    if (event === EVENT_CLICK) {
+      console.log(position)
     }
     return position && position.x >= this.x &&
       position.x <= this.x + this.width &&

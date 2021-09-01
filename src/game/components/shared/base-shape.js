@@ -37,19 +37,9 @@ export default class BaseShape extends BaseObject {
       context.fillStyle = shape.background;
       if (!this.brakedShape) {
         context.stroke();
-      } else {
-        // context.fillStyle = this.fireColor(shape.background);
       }
       context.fill();
     }
-
-    if (this.brakedShape) {
-      this.moveBrakePiece();
-    }
-  }
-
-  fireColor(initialColor) {
-    return [initialColor, "#fac000", "#ff7500", "#fc6400", "#d73502", "#b62203", "#801100"][randomNumber(7)];
   }
 
   brakeShapes() {
@@ -114,10 +104,12 @@ export default class BaseShape extends BaseObject {
     return {min, max};
   }
 
-  moveBrakePiece() {
-    for (const shape of this.brakedShape) {
-      shape.points = shape.points.map((p) => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
-      shape.background = this.reduceOpacity(shape.background, 30);
+  moveBrakedPiece() {
+    if (this.brakedShape) {
+      for (const shape of this.brakedShape) {
+        shape.points = shape.points.map((p) => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
+        shape.background = this.reduceOpacity(shape.background, 30);
+      }
     }
   }
 

@@ -1,20 +1,20 @@
 import Scene from "./shared/scene";
-import Button from "../components/button";
 import {
-  EVENT_CLICK, EVENT_MOUSEDOWN,
+  EVENT_MOUSEDOWN,
   EVENT_MOUSEMOVE, EVENT_MOUSEUP,
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
-  EVENT_TOUCHUP, SCENE_MENU,
+  EVENT_TOUCHUP,
   SCREEN_HEIGHT, SCREEN_WIDTH
 } from "../utils/variables";
 import Ship from "../components/ship";
 import GameLogic from "./shared/game.logic";
-import {randomNumber, scale} from "../utils/helpers";
+import {randomNumber} from "../utils/helpers";
 import Score from "../components/score";
 import Space from "../components/space";
 import shape3 from "../shapes/ship3.json";
 import shape4 from "../shapes/ship4.json";
 import Meteorite from "../components/meteorite";
+import Modal from "../components/modal";
 
 const isMobileMethod = {
   Android: function () {
@@ -78,21 +78,16 @@ export default class ScenePlay extends Scene {
     // last object creation
     this.createNextObject = 0;
     this.createNextShip = 0;
+    this.isModalShow = false;
 
     // game logic
     this.currentGame = new GameLogic();
 
     // space background
-    this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3, 1.1, "rgba(0,0,0,0.96)"));
+    this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 3, 1.1, "rgba(0,0,0,1)"));
     this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 2, 1.2));
     this.spaces.push(new Space(this.eventEmitter, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1.5));
     this.currentGame.spaces = this.spaces;
-
-    // menu button
-    const button = new Button(this.eventEmitter, 5, 7, 100, 30, "MENU");
-    button.listenerEvent(EVENT_CLICK, () =>
-      this.navigator.navigate(SCENE_MENU)
-    );
 
     // ship component
     this.ship = new Ship(this.eventEmitter, SCREEN_WIDTH / 2,
@@ -105,7 +100,6 @@ export default class ScenePlay extends Scene {
 
     // add components to the element array
     this.elements = [this.ship];
-    this.elements.push(button);
     this.elements.push(score);
 
     // elements of the game
@@ -140,7 +134,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.play();
 
     if (this.currentGame.isFinish()) {
-      return;
+      this.showModal();
     }
 
     // render background
@@ -150,14 +144,27 @@ export default class ScenePlay extends Scene {
       this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
     }
 
+    this.renderOrRemovePlayableElements(context);
+
     // render scene elements
     for (const element of this.elements) {
       element.render(context);
     }
 
-    this.renderOrRemovePlayableElements(context);
-
     this.createEnemyByTime();
+  }
+
+  showModal() {
+    if (!this.isModalShow) {
+      this.isModalShow = true;
+      const modalWidth = 300;
+      const modal = new Modal(this.eventEmitter, SCREEN_WIDTH / 2 - modalWidth / 2, SCREEN_HEIGHT / 2 - 150, modalWidth, 200);
+      modal.score = this.currentGame.getScore();
+      modal.buttonPlay.listenerEvent(EVENT_MOUSEUP, () => {
+        this.initGame();
+      });
+      this.elements.push(modal);
+    }
   }
 
   createEnemyByTime() {

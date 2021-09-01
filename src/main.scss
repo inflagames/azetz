@@ -10,17 +10,4 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
-  canvas {
-    width: 500px;
-    height: auto;
-  }
-
-  @media screen and (max-height: 500px) {
-
-    canvas {
-      width: 100%;
-      height: auto;
-    }
-  }
 }
