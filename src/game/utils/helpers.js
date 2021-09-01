@@ -37,11 +37,11 @@ export function distance(p1, p2) {
  * @return {number}
  */
 export function scale(value) {
-  return value * window.currentWidth / SCREEN_WIDTH;
+  return (value * window.currentWidth) / SCREEN_WIDTH;
 }
 
 export function unscale(value) {
-  return value * SCREEN_WIDTH / window.currentWidth;
+  return (value * SCREEN_WIDTH) / window.currentWidth;
 }
 
 /**
@@ -61,7 +61,7 @@ export function randomNumber(limit, start = 0) {
 export function detectCollision(shape1, shape2) {
   const axis = [...extractAxis(shape1), ...extractAxis(shape2)];
 
-  for (let axi of axis) {
+  for (const axi of axis) {
     const p1 = shapeProjection(shape1, axi);
     const p2 = shapeProjection(shape2, axi);
     if (!((p1.min > p2.min && p1.min < p2.max) || (p1.max > p2.min && p1.max < p2.max) ||

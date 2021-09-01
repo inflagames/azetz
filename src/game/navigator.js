@@ -1,11 +1,9 @@
 import {
   EVENT_RESIZE,
   SCENE_GAME,
-  SCENE_MENU,
   SCREEN_RATIO,
   SCREEN_WIDTH,
 } from "./utils/variables";
-import Menu from "./scenes/menu.scene";
 import ScenePlay from "./scenes/play.scene";
 import Observable from "./utils/observable";
 
@@ -18,7 +16,6 @@ export default class Navigator {
     this.gameWidth = SCREEN_WIDTH;
     this.gameHeght = SCREEN_WIDTH * SCREEN_RATIO;
     this.sceneClasses = new Map();
-    this.sceneClasses.set(SCENE_MENU, Menu);
     this.sceneClasses.set(SCENE_GAME, ScenePlay);
     this.scenesInstances = new Map();
     /** @member {Scene} */

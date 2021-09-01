@@ -147,9 +147,6 @@ export default class ScenePlay extends Scene {
     // render background
     this.cleanCanvas(context);
 
-    // draw ship flight line
-    // this.drawFlightLine(context);
-
     if (!this.currentGame.isFighting()) {
       this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
     }
@@ -222,20 +219,6 @@ export default class ScenePlay extends Scene {
       return -rotation < Math.PI / 2 ? angle : Math.PI - angle;
     }
     return Math.PI / 2;
-  }
-
-  /**
-   * @param context {CanvasRenderingContext2D}
-   */
-  drawFlightLine(context) {
-    if (this.directionToFlight) {
-      context.beginPath();
-      context.strokeStyle = "#f00";
-      context.lineWidth = 3;
-      context.moveTo(scale(this.ship.x), scale(SCREEN_HEIGHT - SHIP_PADDING_Y));
-      context.lineTo(scale(this.directionToFlight.x), scale(this.directionToFlight.y));
-      context.stroke();
-    }
   }
 
   cleanCanvas(context) {
