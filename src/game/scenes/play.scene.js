@@ -1,5 +1,6 @@
 import Scene from "./shared/scene";
 import {
+  EVENT_CLICK,
   EVENT_MOUSEDOWN,
   EVENT_MOUSEMOVE, EVENT_MOUSEUP,
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
@@ -15,6 +16,8 @@ import shape3 from "../shapes/ship3.json";
 import shape4 from "../shapes/ship4.json";
 import Meteorite from "../components/meteorite";
 import Modal from "../components/modal";
+import Button from "../components/button";
+import Data from "../utils/data";
 
 const isMobileMethod = {
   Android: function () {
@@ -71,6 +74,13 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
 
+    this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
+    this.buttonPause.textSize = 20;
+    this.buttonPause.listenerEvent(EVENT_CLICK, () => {
+      this.currentGame.pause();
+      this.showModal(Data.getInstance().getScore(), false);
+    });
+
     this.initGame();
   }
 
@@ -99,7 +109,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.score = score;
 
     // add components to the element array
-    this.elements = [this.ship];
+    this.elements = [this.ship, this.buttonPause];
     this.elements.push(score);
 
     // elements of the game
@@ -134,7 +144,7 @@ export default class ScenePlay extends Scene {
     this.currentGame.play();
 
     if (this.currentGame.isFinish()) {
-      this.showModal();
+      this.showModal(this.currentGame.getScore());
     }
 
     // render background
@@ -154,7 +164,7 @@ export default class ScenePlay extends Scene {
     this.createEnemyByTime();
   }
 
-  showModal() {
+  showModal(score, restartGame = true) {
     if (!this.isModalShow) {
       this.isModalShow = true;
       const modalWidth = 300;
@@ -166,11 +176,17 @@ export default class ScenePlay extends Scene {
         modalWidth,
         modalHeight
       );
-      modal.score = this.currentGame.getScore();
+      Data.getInstance().saveScore(Math.max(Data.getInstance().getScore(), score));
+      modal.score = score;
       modal.buttonPlay.listenerEvent(EVENT_MOUSEUP, () => {
         modal.buttonPlay.destroy.emit();
         modal.buttonShareRecord.destroy.emit();
-        this.initGame();
+        this.currentGame.unpause();
+        this.elements.pop();
+        this.isModalShow = false;
+        if (restartGame) {
+          this.initGame();
+        }
       });
       this.elements.push(modal);
     }

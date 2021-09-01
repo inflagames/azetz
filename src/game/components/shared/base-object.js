@@ -57,9 +57,6 @@ export default class BaseObject {
       event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE) {
       return true;
     }
-    if (event === EVENT_CLICK) {
-      console.log(position)
-    }
     return position && position.x >= this.x &&
       position.x <= this.x + this.width &&
       position.y >= this.y &&

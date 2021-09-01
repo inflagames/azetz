@@ -8,6 +8,7 @@ const SHIP_STOP = "3";
 const SHIP_ROTATING = "4";
 const SHIP_DIE = "5";
 const SHIP_DIE_ANIMATION = "6";
+const SHIP_PAUSE = "7";
 
 const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
@@ -43,6 +44,9 @@ export default class GameLogic {
    * run an iteration of the game logic
    */
   play() {
+    if (this.shipStatus() === SHIP_PAUSE) {
+      return;
+    }
     if (!this.isFinish() && this.shipStatus() !== SHIP_DIE_ANIMATION) {
       this.time++;
       this.moveShip();
@@ -58,6 +62,18 @@ export default class GameLogic {
       if (this.time > 20) {
         this.ship.status = [SHIP_DIE];
       }
+    }
+  }
+
+  pause() {
+    if (!this.isFinish()) {
+      this.ship.status.push(SHIP_PAUSE);
+    }
+  }
+
+  unpause() {
+    if (this.shipStatus() === SHIP_PAUSE) {
+      this.ship.status.pop();
     }
   }
 
