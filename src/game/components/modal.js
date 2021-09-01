@@ -65,6 +65,7 @@ export default class Modal extends BaseObject {
    * @param context {CanvasRenderingContext2D}
    */
   renderScore(context) {
+    // toDo guille 01.09.21: refactor this code
     context.beginPath();
     context.font = `${scale(this.textSize)}px Arial`;
     const metrics = context.measureText(this.score + "");

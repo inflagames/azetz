@@ -158,7 +158,14 @@ export default class ScenePlay extends Scene {
     if (!this.isModalShow) {
       this.isModalShow = true;
       const modalWidth = 300;
-      const modal = new Modal(this.eventEmitter, SCREEN_WIDTH / 2 - modalWidth / 2, SCREEN_HEIGHT / 2 - 150, modalWidth, 200);
+      const modalHeight = 200;
+      const modal = new Modal(
+        this.eventEmitter,
+        SCREEN_WIDTH / 2 - modalWidth / 2,
+        SCREEN_HEIGHT / 2 - modalWidth / 2,
+        modalWidth,
+        modalHeight
+      );
       modal.score = this.currentGame.getScore();
       modal.buttonPlay.listenerEvent(EVENT_MOUSEUP, () => {
         this.initGame();
