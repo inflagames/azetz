@@ -2,12 +2,13 @@ export default class Observable {
   constructor() {
     /** @member {function[]} */
     this.subscriptions = [];
+    this.open = true;
   }
 
   /**
    * @param data {Object}
    */
-  emit(data) {
+  emit(data= {}) {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.callFunction(this.subscriptions[i], data);
     }
@@ -34,9 +35,35 @@ export default class Observable {
   /**
    * @param func {function}
    */
+  unsub(func) {
+    this.subscriptions = this.subscriptions.filter((f) => f !== func);
+  }
+
+  /**
+   * @param func {function}
+   */
   on(func) {
     this.subscriptions.push(func);
   }
+}
+
+/**
+ * Filter the value of an Observable
+ * @param stopper {Observable}
+ */
+export function takeUntil(stopper) {
+  let streamCancel = false;
+  const cancelFunction = () => {
+    streamCancel = true;
+    stopper.unsub(cancelFunction);
+  };
+  stopper.on(cancelFunction);
+  return (data, /** @param {Observable} */ observable) => {
+    if (streamCancel) {
+      observable.subscriptions = [];
+    }
+    observable.emit(data);
+  };
 }
 
 /**

@@ -1,6 +1,6 @@
 import Observable, {
   filterObservable,
-  mapObservable,
+  mapObservable, takeUntil,
 } from "../../src/game/utils/observable";
 
 describe("Observable", () => {
@@ -65,6 +65,26 @@ describe("Observable", () => {
       });
 
       observable.emit(4);
+    });
+  });
+
+  describe('Observable takeUntil', function () {
+    it('should cut the stream after takeUntil is emitted', function () {
+      const unsub = new Observable();
+      const obs = new Observable();
+
+      const functionToCall = jest.fn();
+
+      const obsResult = obs.pipe(takeUntil(unsub));
+      obsResult.on(() => {functionToCall()});
+      expect(unsub.subscriptions).toHaveLength(1);
+
+      unsub.emit();
+      expect(unsub.subscriptions).toHaveLength(0);
+
+      obs.emit()
+      expect(obsResult.subscriptions).toHaveLength(0);
+      expect(functionToCall).toHaveBeenCalledTimes(0);
     });
   });
 });
