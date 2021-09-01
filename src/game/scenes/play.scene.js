@@ -168,6 +168,7 @@ export default class ScenePlay extends Scene {
       );
       modal.score = this.currentGame.getScore();
       modal.buttonPlay.listenerEvent(EVENT_MOUSEUP, () => {
+        modal.buttonPlay.destroy.emit();
         this.initGame();
       });
       this.elements.push(modal);

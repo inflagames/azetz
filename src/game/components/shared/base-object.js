@@ -1,4 +1,4 @@
-import {filterObservable} from "../../utils/observable";
+import Observable, {filterObservable, takeUntil} from "../../utils/observable";
 import {EVENT_CLICK, EVENT_MOUSELEAVE, EVENT_MOUSEOUT, EVENT_TOUCHCANCEL, EVENT_TOUCHUP} from "../../utils/variables";
 
 export default class BaseObject {
@@ -16,6 +16,7 @@ export default class BaseObject {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.destroy = new Observable();
 
     // toDo guille 27.08.21: improve this random value to be unique
     this.id = Math.random() * 1000000;
@@ -34,7 +35,10 @@ export default class BaseObject {
    */
   listenerEvent(event, callback) {
     this.eventEmitter
-      .pipe(filterObservable((data) => data.event === event))
+      .pipe(
+        takeUntil(this.destroy),
+        filterObservable((data) => data.event === event)
+      )
       .on((data) => {
         if (data && this.validateEventPropagation(data.position, data.event)) {
           callback(data);
