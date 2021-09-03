@@ -47,7 +47,6 @@ export default class BaseObject {
   }
 
   /**
-   *
    * @param position {{x: number, y: number}}
    * @param event {string}
    * @return {boolean}

@@ -32,4 +32,21 @@ export default class Scene extends BaseObject {
     context.fillStyle = this.backgroundColor;
     context.fill();
   }
+
+  /**
+   * @param position {{x: number, y: number}}
+   * @param event {string}
+   * @return {boolean}
+   */
+  validateEventPropagation(position, event) {
+    const validation = super.validateEventPropagation(position, event);
+    if (validation) {
+      for (const e of this.elements) {
+        if (e.validateEventPropagation(position, event)) {
+          return false;
+        }
+      }
+    }
+    return validation;
+  }
 }

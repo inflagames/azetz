@@ -1,8 +1,8 @@
 import Scene from "./shared/scene";
 import {
   EVENT_CLICK,
-  EVENT_MOUSEDOWN,
-  EVENT_MOUSEMOVE, EVENT_MOUSEUP,
+  EVENT_MOUSEDOWN, EVENT_MOUSELEAVE,
+  EVENT_MOUSEMOVE, EVENT_MOUSEOUT, EVENT_MOUSEUP, EVENT_TOUCHCANCEL,
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
   EVENT_TOUCHUP,
   SCREEN_HEIGHT, SCREEN_WIDTH
@@ -64,6 +64,15 @@ export default class ScenePlay extends Scene {
     /** @member {Space[]} */
     this.spaces = [];
 
+    this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
+    this.buttonPause.textSize = 20;
+    this.buttonPause.listenerEvent(EVENT_CLICK, () => {
+      if (this.currentGame.canPauseGame()) {
+        this.currentGame.pause();
+        this.showModal(Data.getInstance().getScore(), false);
+      }
+    });
+
     // ship touch area component
     this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
@@ -73,15 +82,6 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
-
-    this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
-    this.buttonPause.textSize = 20;
-    this.buttonPause.listenerEvent(EVENT_CLICK, () => {
-      if (this.currentGame.canPauseGame()) {
-        this.currentGame.pause();
-        this.showModal(Data.getInstance().getScore(), false);
-      }
-    });
 
     this.initGame();
   }
@@ -115,7 +115,7 @@ export default class ScenePlay extends Scene {
     this.elements.push(score);
 
     // elements of the game
-    this.playableElements = [];
+    this.playableElements = [this.ship];
   }
 
   shipClickUp() {
