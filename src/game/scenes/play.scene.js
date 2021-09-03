@@ -77,8 +77,10 @@ export default class ScenePlay extends Scene {
     this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
     this.buttonPause.textSize = 20;
     this.buttonPause.listenerEvent(EVENT_CLICK, () => {
-      this.currentGame.pause();
-      this.showModal(Data.getInstance().getScore(), false);
+      if (this.currentGame.canPauseGame()) {
+        this.currentGame.pause();
+        this.showModal(Data.getInstance().getScore(), false);
+      }
     });
 
     this.initGame();
@@ -150,7 +152,7 @@ export default class ScenePlay extends Scene {
     // render background
     this.cleanCanvas(context);
 
-    if (!this.currentGame.isFighting()) {
+    if (this.currentGame.isShipStopped()) {
       this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
     }
 

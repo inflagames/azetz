@@ -55,6 +55,7 @@ export default class GameLogic {
       this.updateScore();
       this.checkCollision();
     } else if (this.shipStatus() === SHIP_DIE_ANIMATION) {
+      // collision animation
       this.enemies.forEach((e) => e.component.moveBrakedPiece());
       this.objects.forEach((o) => o.component.moveBrakedPiece());
       this.ship.component.moveBrakedPiece();
@@ -213,7 +214,7 @@ export default class GameLogic {
   }
 
   moveShip() {
-    if (this.isFighting()) {
+    if (!this.isShipStopped()) {
       this.wallCollision();
 
       this.calculateVelocity();
@@ -265,12 +266,16 @@ export default class GameLogic {
     this.ship.velocity = velocity;
   }
 
-  isFighting() {
-    return this.notMathStatus([SHIP_STOP]);
+  isShipStopped() {
+    return this.shipStatus() === SHIP_STOP;
   }
 
   isFinish() {
     return this.shipStatus() === SHIP_DIE;
+  }
+
+  canPauseGame() {
+    return this.notMathStatus([SHIP_STOP, SHIP_DIE_ANIMATION, SHIP_DIE]);
   }
 
   isShipClickable() {
