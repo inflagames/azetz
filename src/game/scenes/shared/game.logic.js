@@ -274,7 +274,7 @@ export default class GameLogic {
   }
 
   isShipClickable() {
-    return this.notMathStatus([SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION]);
+    return this.notMathStatus([SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION, SHIP_PAUSE]);
   }
 
   notMathStatus(statuses) {
@@ -285,6 +285,7 @@ export default class GameLogic {
   }
 
   wallCollision() {
+    // toDo guille 03.09.21: use for any rotation
     if (
       this.shipStatus() !== SHIP_ROTATING &&
       this.ship.rotation > Math.PI / 2 &&
