@@ -47,6 +47,7 @@ export default class GameLogic {
     if (this.shipStatus() === SHIP_PAUSE) {
       return;
     }
+    this.animateComponents();
     if (!this.isFinish() && this.shipStatus() !== SHIP_DIE_ANIMATION) {
       this.time++;
       this.moveShip();
@@ -55,15 +56,18 @@ export default class GameLogic {
       this.updateScore();
       this.checkCollision();
     } else if (this.shipStatus() === SHIP_DIE_ANIMATION) {
-      // collision animation
-      this.enemies.forEach((e) => e.component.moveBrakedPiece());
-      this.objects.forEach((o) => o.component.moveBrakedPiece());
-      this.ship.component.moveBrakedPiece();
       this.time++;
       if (this.time > 20) {
         this.ship.status = [SHIP_DIE];
       }
     }
+  }
+
+  animateComponents() {
+    // animation in general
+    this.enemies.forEach((e) => e.component.animate());
+    this.objects.forEach((o) => o.component.animate());
+    this.ship.component.animate();
   }
 
   pause() {

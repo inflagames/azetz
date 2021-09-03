@@ -59,6 +59,9 @@ export function randomNumber(limit, start = 0) {
  * @return {boolean}
  */
 export function detectCollision(shape1, shape2) {
+  if (shape1.length < 3 || shape2.length < 3) {
+    return false;
+  }
   const axis = [...extractAxis(shape1), ...extractAxis(shape2)];
 
   for (const axi of axis) {

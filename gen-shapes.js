@@ -29,7 +29,7 @@ function extractPath(file) {
 
   const shapes = [];
 
-  for (let p of paths) {
+  for (const p of paths) {
     const values = new Map();
     let subs = '', value = false, key = '';
     for (let i = 5; i < p.length; i++) {
@@ -56,7 +56,9 @@ function extractPath(file) {
       id: values.get('id')
     });
   }
-  return shapes;
+  return {
+    shapes,
+  };
 }
 
 function getStyle(style, property) {
