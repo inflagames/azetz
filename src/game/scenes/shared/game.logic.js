@@ -98,10 +98,10 @@ export default class GameLogic {
   }
 
   checkCollision() {
-    const shapes = this.ship.component.getProjection();
+    const shapes = this.ship.component.getProjection().filter((p) => !p.smoke);
     let component;
     for (const enemy of this.enemies) {
-      const enemyShapes = enemy.component.getProjection();
+      const enemyShapes = enemy.component.getProjection().filter((p) => !p.smoke);
       if (this.checkCollisionInProjections(shapes, enemyShapes)) {
         this.ship.status = [SHIP_DIE_ANIMATION];
         component = enemy.component;

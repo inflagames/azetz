@@ -147,7 +147,7 @@ export default class BaseShape extends BaseObject {
   }
 
   /**
-   * @return {{points: {x: number, y: number}[], background: string}[]}
+   * @return {{points: {x: number, y: number}[], background: string, smoke: boolean}[]}
    */
   getProjection() {
     const rotation = this.rotation + Math.PI / 2;
