@@ -1,8 +1,8 @@
 import Scene from "./shared/scene";
 import {
   EVENT_CLICK,
-  EVENT_MOUSEDOWN, EVENT_MOUSELEAVE,
-  EVENT_MOUSEMOVE, EVENT_MOUSEOUT, EVENT_MOUSEUP, EVENT_TOUCHCANCEL,
+  EVENT_MOUSEDOWN,
+  EVENT_MOUSEMOVE, EVENT_MOUSEUP,
   EVENT_TOUCHDOWN, EVENT_TOUCHMOVE,
   EVENT_TOUCHUP,
   SCREEN_HEIGHT, SCREEN_WIDTH
@@ -18,36 +18,8 @@ import Meteorite from "../components/meteorite";
 import Modal from "../components/modal";
 import Button from "../components/button";
 import Data from "../utils/data";
+import {isMobileMethod} from "../utils/mobile-device";
 
-const isMobileMethod = {
-  Android: function () {
-    return navigator.userAgent.match(/Android/i);
-  },
-  BlackBerry: function () {
-    return navigator.userAgent.match(/BlackBerry/i);
-  },
-  iOS: function () {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-  },
-  Opera: function () {
-    return navigator.userAgent.match(/Opera Mini/i);
-  },
-  Windows: function () {
-    return (
-      navigator.userAgent.match(/IEMobile/i) ||
-      navigator.userAgent.match(/WPDesktop/i)
-    );
-  },
-  any: function () {
-    return (
-      isMobileMethod.Android() ||
-      isMobileMethod.BlackBerry() ||
-      isMobileMethod.iOS() ||
-      isMobileMethod.Opera() ||
-      isMobileMethod.Windows()
-    );
-  }
-};
 export const isMobile = isMobileMethod.any();
 
 export const SHIP_PADDING_Y = 100;
