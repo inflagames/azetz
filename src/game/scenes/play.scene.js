@@ -182,6 +182,7 @@ export default class ScenePlay extends Scene {
     // toDo guille 30.08.21: improve this
     ship.shape = randomNumber(2) ? shape3 : shape4;
     ship.rotation = (Math.PI * 3) / 2;
+    ship.enableSmoke = true;
     this.playableElements.push(ship);
     this.currentGame.createEnemy(ship);
   }

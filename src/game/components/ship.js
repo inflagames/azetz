@@ -1,5 +1,6 @@
 import BaseShape from "./shared/base-shape";
 import shape2 from "../shapes/ship2.json";
+import {rotateVector} from "../utils/helpers";
 
 export default class Ship extends BaseShape {
   /**
@@ -16,6 +17,7 @@ export default class Ship extends BaseShape {
     this.scaleShape = 4;
     this.shape = shape2;
     this.animateSmokeInterval = 0;
+    this.enableSmoke = false;
 
     this.updateCoordinates();
   }
@@ -31,46 +33,37 @@ export default class Ship extends BaseShape {
   }
 
   animateSmoke() {
-    if (!this.brakedShape) {
-      this.animateSmokeInterval++;
-      if (this.animateSmokeInterval < 2) {
-        return;
-      }
-      this.animateSmokeInterval = 0;
-      const origins = this.shape.shapes.filter((s) => !!s.origin && this.getOpacity(s.background) > 0);
-      const MAX_SMOKE_ITEMS = 100;
-      const MAX_NEW_SMOKE_PER_ITERATION = 3;
+    if (!this.brakedShape && this.enableSmoke) {
+      const origins = this.shape.shapes.filter((s) => s.smoke && this.getOpacity(s.background) > 0);
+      const MAX_SMOKE_ITEMS = 20;
+      const MAX_NEW_SMOKE_PER_ITERATION = 1;
+      const SMOKE_VELOCITY = 1;
+      const SMOKE_DELAY_CREATION = .5;
+      const SMOKE_RADIO = 1;
+      const SMOKE_POINTS = 6;
       for (const origin of origins) {
         origin.points = origin.points.map((p) => ({x: p.x + origin.vector.x, y: p.y + origin.vector.y}));
-        origin.background = this.reduceOpacity(origin.background, 30);
+        origin.background = this.reduceOpacity(origin.background, 22);
       }
-      for (let i = Math.min(MAX_SMOKE_ITEMS - origins.length, MAX_NEW_SMOKE_PER_ITERATION); i >= 0; i--) {
-        origins.push({
-          background: "#cccccc",
-          vector: {x: 1, y: i - 1},
-          origin: {},
-          points: [
-            {
-              x: 0,
-              y: 2,
-            },
-            {
-              x: 0,
-              y: 0,
-            },
-            {
-              x: 0,
-              y: 2,
-            },
-            {
-              x: 2,
-              y: 2,
-            },
-          ],
-        });
+
+      this.animateSmokeInterval++;
+      if (this.animateSmokeInterval > SMOKE_DELAY_CREATION) {
+        this.animateSmokeInterval = 0;
+        for (let i = Math.min(MAX_SMOKE_ITEMS - origins.length, MAX_NEW_SMOKE_PER_ITERATION); i >= 0; i--) {
+          const velocity = SMOKE_VELOCITY * Math.random() + .4;
+          const dir = rotateVector({x: -velocity, y: 0}, Math.PI * 3 / 2);
+          const angle = Math.PI * 2 / SMOKE_POINTS;
+          origins.unshift({
+            background: "#cccccc",
+            vector: {x: dir.x, y: dir.y},
+            smoke: true,
+            points: new Array(SMOKE_POINTS).fill(0)
+              .map((v, i) => rotateVector({x: SMOKE_RADIO, y: 0}, i * angle)),
+          });
+        }
       }
       this.shape = {
-        shapes: [...this.shape.shapes.filter((s) => !s.origin), ...origins]
+        shapes: [...origins, ...this.shape.shapes.filter((s) => !s.smoke)]
       };
     }
   }

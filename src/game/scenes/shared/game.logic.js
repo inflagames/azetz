@@ -220,6 +220,7 @@ export default class GameLogic {
   moveShip() {
     if (!this.isShipStopped()) {
       this.wallCollision();
+      this.ship.component.enableSmoke = true;
 
       this.calculateVelocity();
       this.rotateShip();
@@ -228,6 +229,8 @@ export default class GameLogic {
 
       this.ship.x += movement.x;
       this.ship.y += movement.y;
+    } else {
+      this.ship.component.enableSmoke = false;
     }
   }
 
