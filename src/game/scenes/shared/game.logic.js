@@ -47,6 +47,7 @@ export default class GameLogic {
     if (this.shipStatus() === SHIP_PAUSE) {
       return;
     }
+    this.animateComponents();
     if (!this.isFinish() && this.shipStatus() !== SHIP_DIE_ANIMATION) {
       this.time++;
       this.moveShip();
@@ -55,14 +56,18 @@ export default class GameLogic {
       this.updateScore();
       this.checkCollision();
     } else if (this.shipStatus() === SHIP_DIE_ANIMATION) {
-      this.enemies.forEach((e) => e.component.moveBrakedPiece());
-      this.objects.forEach((o) => o.component.moveBrakedPiece());
-      this.ship.component.moveBrakedPiece();
       this.time++;
       if (this.time > 20) {
         this.ship.status = [SHIP_DIE];
       }
     }
+  }
+
+  animateComponents() {
+    // animation in general
+    this.enemies.forEach((e) => e.component.animate());
+    this.objects.forEach((o) => o.component.animate());
+    this.ship.component.animate();
   }
 
   pause() {
@@ -208,13 +213,14 @@ export default class GameLogic {
    */
   launchShip(rotation) {
     this.time = 0;
-    this.ship.rotation = rotation;
+    this.ship.expectedRotation = rotation;
     this.ship.status = [SHIP_ACCELERATING];
   }
 
   moveShip() {
-    if (this.isFighting()) {
+    if (!this.isShipStopped()) {
       this.wallCollision();
+      this.ship.component.enableSmoke = true;
 
       this.calculateVelocity();
       this.rotateShip();
@@ -223,11 +229,13 @@ export default class GameLogic {
 
       this.ship.x += movement.x;
       this.ship.y += movement.y;
+    } else {
+      this.ship.component.enableSmoke = false;
     }
   }
 
   rotateShip() {
-    if (this.shipStatus() === SHIP_ROTATING) {
+    // if (this.shipStatus() === SHIP_ROTATING) {
       const rotationFactor = ((1000 / FPS) * Math.PI) / TIME_TO_ROTATE_SHIP_MS;
       if (this.ship.rotation > this.ship.expectedRotation) {
         this.ship.rotation = Math.max(
@@ -241,10 +249,10 @@ export default class GameLogic {
         );
       }
       // stop rotation
-      if (this.ship.rotation === this.ship.expectedRotation) {
+      if (this.ship.rotation === this.ship.expectedRotation && this.shipStatus() === SHIP_ROTATING) {
         this.ship.status.pop();
       }
-    }
+    // }
   }
 
   calculateVelocity() {
@@ -265,16 +273,20 @@ export default class GameLogic {
     this.ship.velocity = velocity;
   }
 
-  isFighting() {
-    return this.notMathStatus([SHIP_STOP]);
+  isShipStopped() {
+    return this.shipStatus() === SHIP_STOP;
   }
 
   isFinish() {
     return this.shipStatus() === SHIP_DIE;
   }
 
+  canPauseGame() {
+    return this.notMathStatus([SHIP_STOP, SHIP_DIE_ANIMATION, SHIP_DIE]);
+  }
+
   isShipClickable() {
-    return this.notMathStatus([SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION]);
+    return this.notMathStatus([SHIP_ROTATING, SHIP_DIE, SHIP_DIE_ANIMATION, SHIP_PAUSE]);
   }
 
   notMathStatus(statuses) {
@@ -285,6 +297,7 @@ export default class GameLogic {
   }
 
   wallCollision() {
+    // toDo guille 03.09.21: use for any rotation
     if (
       this.shipStatus() !== SHIP_ROTATING &&
       this.ship.rotation > Math.PI / 2 &&

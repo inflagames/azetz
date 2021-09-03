@@ -37,7 +37,7 @@ export default class Meteorite extends BaseShape {
       newPoints.push(this.randomMiddlePoint(points[points.length - 1], points[0]));
       points = newPoints;
     }
-    this.shape = [{background: "#b3b3b3", points}];
+    this.shape = {shapes: [{background: "#b3b3b3", points}]};
   }
 
   randomMiddlePoint(p1, p2) {

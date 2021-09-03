@@ -1,5 +1,5 @@
 import BaseObject from "./base-object";
-import {getPointByVectorRotation, randomNumber, scale} from "../../utils/helpers";
+import {getPointByVectorRotation, scale} from "../../utils/helpers";
 
 export default class BaseShape extends BaseObject {
   /**
@@ -26,8 +26,11 @@ export default class BaseShape extends BaseObject {
     // ship painted
     const shapes = this.getProjection();
 
-    for (let shape of shapes) {
+    for (const shape of shapes) {
       const points = shape.points;
+      if (points.length === 0) {
+        continue;
+      }
       context.beginPath();
       context.moveTo(scale(points[0].x), scale(points[0].y));
       for (let i = 1; i < points.length; i++) {
@@ -42,17 +45,24 @@ export default class BaseShape extends BaseObject {
     }
   }
 
+  animate() {
+    this.moveBrakedPiece();
+  }
+
   brakeShapes() {
-    const shapes = this.shipShape();
-    this.brakedShape = [];
+    const shapes = this.shipShape().shapes;
+
+    this.brakedShape = {shapes: []}
 
     // brake in triangles
     for (const shape of shapes) {
-      this.brakedShape = [...this.brakedShape, ...this.brakeShape(shape)];
+      this.brakedShape = {
+        shapes: [...this.brakedShape.shapes, ...this.brakeShape(shape)]
+      };
     }
 
     // calculate direction vector
-    for (const shape of this.brakedShape) {
+    for (const shape of this.brakedShape.shapes) {
       const cp = this.shapeCenter(shape.points);
       const d = Math.random() + 0.5;
       const factor = d / Math.sqrt(Math.pow(cp.x, 2) + Math.pow(cp.y, 2));
@@ -65,6 +75,9 @@ export default class BaseShape extends BaseObject {
    * @return {{x: number, y: number}[]}
    */
   brakeShape(shape) {
+    if (shape.points.length === 0) {
+      return shape.points;
+    }
     const {min, max} = this.coverBox(shape.points);
 
     const fixedSize = 2;
@@ -106,7 +119,7 @@ export default class BaseShape extends BaseObject {
 
   moveBrakedPiece() {
     if (this.brakedShape) {
-      for (const shape of this.brakedShape) {
+      for (const shape of this.brakedShape.shapes) {
         shape.points = shape.points.map((p) => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
         shape.background = this.reduceOpacity(shape.background, 30);
       }
@@ -119,10 +132,18 @@ export default class BaseShape extends BaseObject {
    * @returns {string}
    */
   reduceOpacity(color, extract) {
-    let alpha = color.length > 7 ? parseInt(color.substr(7, 2), 16) : 255;
+    let alpha = this.getOpacity(color);
     alpha = Math.min(255, Math.max(alpha - extract, 0));
     alpha = alpha.toString(16);
     return `#${color.substr(1, 6)}${(alpha.length < 2 ? "0" : "") + alpha}`;
+  }
+
+  /**
+   * @param color {string}
+   * @return {number}
+   */
+  getOpacity(color) {
+    return color.length > 7 ? parseInt(color.substr(7, 2), 16) : 255;
   }
 
   /**
@@ -131,7 +152,7 @@ export default class BaseShape extends BaseObject {
   getProjection() {
     const rotation = this.rotation + Math.PI / 2;
 
-    const shapes = this.shipShape();
+    const shapes = this.shipShape().shapes;
     const pivot = {x: this.x, y: this.y};
 
     const projectedShape = [];
@@ -147,9 +168,11 @@ export default class BaseShape extends BaseObject {
   }
 
   /**
-   * @returns {[]}
+   * @returns {{shapes: {background: string, points: {x: number, y: number}}[]}}
    */
   shipShape() {
-    return [];
+    return {
+      shapes: [],
+    };
   }
 }

@@ -18,36 +18,8 @@ import Meteorite from "../components/meteorite";
 import Modal from "../components/modal";
 import Button from "../components/button";
 import Data from "../utils/data";
+import {isMobileMethod} from "../utils/mobile-device";
 
-const isMobileMethod = {
-  Android: function () {
-    return navigator.userAgent.match(/Android/i);
-  },
-  BlackBerry: function () {
-    return navigator.userAgent.match(/BlackBerry/i);
-  },
-  iOS: function () {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-  },
-  Opera: function () {
-    return navigator.userAgent.match(/Opera Mini/i);
-  },
-  Windows: function () {
-    return (
-      navigator.userAgent.match(/IEMobile/i) ||
-      navigator.userAgent.match(/WPDesktop/i)
-    );
-  },
-  any: function () {
-    return (
-      isMobileMethod.Android() ||
-      isMobileMethod.BlackBerry() ||
-      isMobileMethod.iOS() ||
-      isMobileMethod.Opera() ||
-      isMobileMethod.Windows()
-    );
-  }
-};
 export const isMobile = isMobileMethod.any();
 
 export const SHIP_PADDING_Y = 100;
@@ -64,6 +36,15 @@ export default class ScenePlay extends Scene {
     /** @member {Space[]} */
     this.spaces = [];
 
+    this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
+    this.buttonPause.textSize = 20;
+    this.buttonPause.listenerEvent(EVENT_CLICK, () => {
+      if (this.currentGame.canPauseGame()) {
+        this.currentGame.pause();
+        this.showModal(Data.getInstance().getScore(), false);
+      }
+    });
+
     // ship touch area component
     this.listenerEvent(EVENT_MOUSEDOWN, this.shipClickDown.bind(this));
     this.listenerEvent(EVENT_TOUCHDOWN, this.shipClickDown.bind(this));
@@ -73,13 +54,6 @@ export default class ScenePlay extends Scene {
     this.listenerEvent(EVENT_MOUSEMOVE, this.shipClickMove.bind(this));
     this.listenerEvent(EVENT_TOUCHUP, this.shipClickUp.bind(this));
     this.listenerEvent(EVENT_TOUCHMOVE, this.shipClickMove.bind(this));
-
-    this.buttonPause = new Button(this.eventEmitter, SCORE_MARGIN, SCORE_MARGIN, 60, 30, "PAUSE");
-    this.buttonPause.textSize = 20;
-    this.buttonPause.listenerEvent(EVENT_CLICK, () => {
-      this.currentGame.pause();
-      this.showModal(Data.getInstance().getScore(), false);
-    });
 
     this.initGame();
   }
@@ -113,7 +87,7 @@ export default class ScenePlay extends Scene {
     this.elements.push(score);
 
     // elements of the game
-    this.playableElements = [];
+    this.playableElements = [this.ship];
   }
 
   shipClickUp() {
@@ -150,7 +124,7 @@ export default class ScenePlay extends Scene {
     // render background
     this.cleanCanvas(context);
 
-    if (!this.currentGame.isFighting()) {
+    if (this.currentGame.isShipStopped()) {
       this.ship.rotation = this.calculateShipRotation(this.directionToFlight);
     }
 
@@ -208,6 +182,7 @@ export default class ScenePlay extends Scene {
     // toDo guille 30.08.21: improve this
     ship.shape = randomNumber(2) ? shape3 : shape4;
     ship.rotation = (Math.PI * 3) / 2;
+    ship.enableSmoke = true;
     this.playableElements.push(ship);
     this.currentGame.createEnemy(ship);
   }
