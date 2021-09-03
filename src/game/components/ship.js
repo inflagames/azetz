@@ -43,7 +43,7 @@ export default class Ship extends BaseShape {
       const SMOKE_POINTS = 6;
       for (const origin of origins) {
         origin.points = origin.points.map((p) => ({x: p.x + origin.vector.x, y: p.y + origin.vector.y}));
-        origin.background = this.reduceOpacity(origin.background, 22);
+        origin.background = this.reduceOpacity(origin.background, 4);
       }
 
       this.animateSmokeInterval++;
@@ -54,11 +54,11 @@ export default class Ship extends BaseShape {
           const dir = rotateVector({x: -velocity, y: 0}, Math.PI * 3 / 2);
           const angle = Math.PI * 2 / SMOKE_POINTS;
           origins.unshift({
-            background: "#cccccc",
+            background: "#CCCCCC38",
             vector: {x: dir.x, y: dir.y},
             smoke: true,
             points: new Array(SMOKE_POINTS).fill(0)
-              .map((v, i) => rotateVector({x: SMOKE_RADIO, y: 0}, i * angle)),
+              .map((v, i) => rotateVector({x: SMOKE_RADIO * Math.random() + .6, y: 0}, i * angle)),
           });
         }
       }

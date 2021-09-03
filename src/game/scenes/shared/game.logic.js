@@ -213,7 +213,7 @@ export default class GameLogic {
    */
   launchShip(rotation) {
     this.time = 0;
-    this.ship.rotation = rotation;
+    this.ship.expectedRotation = rotation;
     this.ship.status = [SHIP_ACCELERATING];
   }
 
@@ -235,7 +235,7 @@ export default class GameLogic {
   }
 
   rotateShip() {
-    if (this.shipStatus() === SHIP_ROTATING) {
+    // if (this.shipStatus() === SHIP_ROTATING) {
       const rotationFactor = ((1000 / FPS) * Math.PI) / TIME_TO_ROTATE_SHIP_MS;
       if (this.ship.rotation > this.ship.expectedRotation) {
         this.ship.rotation = Math.max(
@@ -249,10 +249,10 @@ export default class GameLogic {
         );
       }
       // stop rotation
-      if (this.ship.rotation === this.ship.expectedRotation) {
+      if (this.ship.rotation === this.ship.expectedRotation && this.shipStatus() === SHIP_ROTATING) {
         this.ship.status.pop();
       }
-    }
+    // }
   }
 
   calculateVelocity() {
