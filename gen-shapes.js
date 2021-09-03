@@ -53,7 +53,7 @@ function extractPath(file) {
     shapes.push({
       background: getStyle(values.get('style'), 'fill'),
       points: extractMesh(values.get('d')),
-      id: values.get('id')
+      // id: values.get('id')
     });
   }
   return {

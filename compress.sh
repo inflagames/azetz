@@ -15,7 +15,9 @@ ls dist | grep -P ".*map$" | xargs bash -c 'for arg; do delFile "dist/$arg"; don
 
 zip -r -9 $GAME_ZIP_FILE_NAME dist
 
-FILE_SIZE=$(($(du -b azetz.zip | cut -f1) / 1024))
+FILE_SIZE_BYTE=$(du -b azetz.zip | cut -f1)
+FILE_SIZE=$((FILE_SIZE_BYTE / 1024))
+MISSING=$((13*1024-FILE_SIZE_BYTE))
 
 if (( $FILE_SIZE > 13 )); then
   echo "-----------------------------------------"
@@ -23,7 +25,7 @@ if (( $FILE_SIZE > 13 )); then
   echo "-----------------------------------------"
   exit 27
 else
-  echo "----------------------------"
-  echo "| ${FILE_SIZE}KB FILE UNDER 13KB, GAME ON |"
-  echo "----------------------------"
+  echo "------------------------------------------------------------"
+  echo "| ${FILE_SIZE}KB (${FILE_SIZE_BYTE} BYTES) OF 13KB, STILL ${MISSING} BYTES FREE, GAME ON |"
+  echo "------------------------------------------------------------"
 fi
