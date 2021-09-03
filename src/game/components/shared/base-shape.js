@@ -52,15 +52,17 @@ export default class BaseShape extends BaseObject {
   brakeShapes() {
     const shapes = this.shipShape().shapes;
 
+    this.brakedShape = {shapes: []}
+
     // brake in triangles
     for (const shape of shapes) {
       this.brakedShape = {
-        shapes: [...this.brakedShape, ...this.brakeShape(shape)]
+        shapes: [...this.brakedShape.shapes, ...this.brakeShape(shape)]
       };
     }
 
     // calculate direction vector
-    for (const shape of this.brakedShape) {
+    for (const shape of this.brakedShape.shapes) {
       const cp = this.shapeCenter(shape.points);
       const d = Math.random() + 0.5;
       const factor = d / Math.sqrt(Math.pow(cp.x, 2) + Math.pow(cp.y, 2));
@@ -117,7 +119,7 @@ export default class BaseShape extends BaseObject {
 
   moveBrakedPiece() {
     if (this.brakedShape) {
-      for (const shape of this.brakedShape) {
+      for (const shape of this.brakedShape.shapes) {
         shape.points = shape.points.map((p) => ({x: p.x + shape.vector.x, y: p.y + shape.vector.y}));
         shape.background = this.reduceOpacity(shape.background, 30);
       }
@@ -150,7 +152,7 @@ export default class BaseShape extends BaseObject {
   getProjection() {
     const rotation = this.rotation + Math.PI / 2;
 
-    const shapes = this.shipShape();
+    const shapes = this.shipShape().shapes;
     const pivot = {x: this.x, y: this.y};
 
     const projectedShape = [];

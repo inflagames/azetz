@@ -37,7 +37,7 @@ export default class Ship extends BaseShape {
         return;
       }
       this.animateSmokeInterval = 0;
-      const origins = this.shape.filter((s) => !!s.origin && this.getOpacity(s.background) > 0);
+      const origins = this.shape.shapes.filter((s) => !!s.origin && this.getOpacity(s.background) > 0);
       const MAX_SMOKE_ITEMS = 100;
       const MAX_NEW_SMOKE_PER_ITERATION = 3;
       for (const origin of origins) {
@@ -47,7 +47,7 @@ export default class Ship extends BaseShape {
       for (let i = Math.min(MAX_SMOKE_ITEMS - origins.length, MAX_NEW_SMOKE_PER_ITERATION); i >= 0; i--) {
         origins.push({
           background: "#cccccc",
-          vector: {x: 1, y: i-1},
+          vector: {x: 1, y: i - 1},
           origin: {},
           points: [
             {
@@ -69,7 +69,9 @@ export default class Ship extends BaseShape {
           ],
         });
       }
-      this.shape = [...this.shape.filter((s) => !s.origin), ...origins];
+      this.shape = {
+        shapes: [...this.shape.shapes.filter((s) => !s.origin), ...origins]
+      };
     }
   }
 
