@@ -168,7 +168,7 @@ export default class ScenePlay extends Scene {
 
   createEnemyByTime() {
     if (this.createNextObject < this.currentGame.ship.y) {
-      this.createNextObject = this.currentGame.ship.y + randomNumber(100, 200);
+      this.createNextObject = this.currentGame.ship.y + randomNumber(250, 50);
       this.createMeteorite();
     }
     if (this.createNextShip < this.currentGame.ship.y) {

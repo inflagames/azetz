@@ -14,7 +14,6 @@ const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
 const TIME_TO_ROTATE_SHIP_MS = 400;
 
-const ME_ROTATION = Math.PI / 80;
 
 export default class GameLogic {
   constructor() {
@@ -141,10 +140,7 @@ export default class GameLogic {
    * @param ship {Ship}
    */
   createEnemy(ship) {
-    const xPosition = randomNumber(
-      SCREEN_WIDTH - SHIP_PADDING_Y * 2,
-      SHIP_PADDING_Y
-    );
+    const xPosition = this.getRandomXPosition();
     this.enemies.push({
       x: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
@@ -157,13 +153,12 @@ export default class GameLogic {
    * @param meteorite {Meteorite}
    */
   createMeteorite(meteorite) {
-    const xPosition = randomNumber(
-      SCREEN_WIDTH - SHIP_PADDING_Y * 2,
-      SHIP_PADDING_Y
-    );
+    const xPosition = this.getRandomXPosition();
     this.objects.push({
       x: xPosition,
+      expectedX: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
+      velocity: 1.5 * Math.random() + 0.7,
       rotation: 0,
       component: meteorite,
     });
@@ -200,12 +195,31 @@ export default class GameLogic {
     });
 
     this.objects.forEach((obj) => {
+      this.moveMeteorite(obj);
       obj.component.updateCoordinates(
         obj.x,
         SCREEN_HEIGHT - (obj.y - this.ship.y)
       );
-      obj.component.rotation += ME_ROTATION;
+      if (obj.expectedX === obj.x) {
+        obj.expectedX = this.getRandomXPosition();
+      }
     });
+  }
+
+  moveMeteorite(obj) {
+    const velocity = obj.velocity;
+    let x = obj.x + (obj.x > obj.expectedX ? -velocity : obj.x < obj.expectedX ? velocity : 0);
+    if ((obj.x > obj.expectedX && x < obj.expectedX) || (obj.x < obj.expectedX && x > obj.expectedX)) {
+      x = obj.expectedX;
+    }
+    obj.x = x;
+  }
+
+  getRandomXPosition() {
+    return randomNumber(
+      SCREEN_WIDTH - SHIP_PADDING_Y,
+      SHIP_PADDING_Y / 2
+    );
   }
 
   /**

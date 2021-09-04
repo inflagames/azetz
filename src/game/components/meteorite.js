@@ -11,6 +11,8 @@ export default class Meteorite extends BaseShape {
   constructor(eventEmitter, x = 0, y = 0, ratio = 0) {
     ratio += (ratio / 2) * Math.random();
     super(eventEmitter, x, y, ratio, 0);
+    this.rotationAnimate = Math.PI / 30 * Math.random() * (randomNumber(2) ? 1 : -1);
+    this.expectedX = 0;
 
     this.generateShape();
     this.updateCoordinates();
@@ -49,5 +51,12 @@ export default class Meteorite extends BaseShape {
       x: mp.x + v2.x * factor,
       y: mp.y + v2.y * factor,
     };
+  }
+
+  animate() {
+    super.animate();
+    if (!this.brakedShape) {
+      this.rotation += this.rotationAnimate;
+    }
   }
 }
