@@ -8,7 +8,7 @@ import {
   SCREEN_HEIGHT, SCREEN_WIDTH
 } from "../utils/variables";
 import Ship from "../components/ship";
-import GameLogic from "./shared/game.logic";
+import GameLogic, {SHIP_DIE_ANIMATION} from "./shared/game.logic";
 import {randomNumber} from "../utils/helpers";
 import Score from "../components/score";
 import Space from "../components/space";
@@ -117,6 +117,8 @@ export default class ScenePlay extends Scene {
     // execute game logic
     this.currentGame.play();
 
+    this.preShakeScreen(context);
+
     if (this.currentGame.isFinish()) {
       this.showModal(this.currentGame.getScore());
     }
@@ -136,6 +138,27 @@ export default class ScenePlay extends Scene {
     }
 
     this.createEnemyByTime();
+
+    this.posShakeScreen(context);
+  }
+
+  preShakeScreen(context) {
+    if (this.currentGame.shipStatus() === SHIP_DIE_ANIMATION) {
+      const SHAKE_DURATION = 10;
+      if (this.currentGame.time > SHAKE_DURATION) {
+        return;
+      }
+      context.save();
+      const dx = randomNumber(20, -10);
+      const dy = randomNumber(20, -10);
+      context.translate(dx, dy);
+    }
+  }
+
+  posShakeScreen(context) {
+    if (this.currentGame.shipStatus() === SHIP_DIE_ANIMATION) {
+      context.restore();
+    }
   }
 
   showModal(score, restartGame = true) {

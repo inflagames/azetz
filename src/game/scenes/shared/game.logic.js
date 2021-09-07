@@ -7,7 +7,7 @@ const SHIP_DECELERATING = "1";
 const SHIP_STOP = "3";
 const SHIP_ROTATING = "4";
 const SHIP_DIE = "5";
-const SHIP_DIE_ANIMATION = "6";
+export const SHIP_DIE_ANIMATION = "6";
 const SHIP_PAUSE = "7";
 
 const MAX_VELOCITY = 15;
