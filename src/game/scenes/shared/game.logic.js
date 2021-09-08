@@ -333,7 +333,7 @@ export default class GameLogic {
         obj.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE)
     ) {
       obj.expectedRotation = Math.PI - obj.rotation;
-      while (obj.expectedRotation < 0) obj.expectedRotation += Math.PI * 2;
+      obj.expectedRotation += obj.expectedRotation < 0 ? Math.PI * 2 : 0;
       return true;
     }
     return false;
