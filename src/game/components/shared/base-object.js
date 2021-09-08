@@ -10,16 +10,25 @@ export default class BaseObject {
    * @param height {number}
    */
   constructor(eventEmitter, x = 0, y = 0, width = 0, height = 0) {
+    this.destroy = new Observable();
     /** @member {Observable} */
     this.eventEmitter = eventEmitter;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.destroy = new Observable();
+    this.lastMousePosition = null;
 
     // toDo guille 27.08.21: improve this random value to be unique
     this.id = Math.random() * 1000000;
+  }
+
+  set eventEmitter(value) {
+    this._eventEmitter = value ? value.pipe(takeUntil(this.destroy)) : value;
+  }
+
+  get eventEmitter() {
+    return this._eventEmitter;
   }
 
   /**
@@ -35,10 +44,7 @@ export default class BaseObject {
    */
   listenerEvent(event, callback) {
     this.eventEmitter
-      .pipe(
-        takeUntil(this.destroy),
-        filterObservable((data) => data.event === event)
-      )
+      .pipe(filterObservable((data) => data.event === event))
       .on((data) => {
         if (data && this.validateEventPropagation(data.position, data.event)) {
           callback(data);
@@ -56,6 +62,14 @@ export default class BaseObject {
       event === EVENT_TOUCHCANCEL || event === EVENT_MOUSELEAVE) {
       return true;
     }
+    if (this.isPositionInside(this.lastMousePosition) && !this.isPositionInside(position)) {
+      this.eventEmitter.emit({event: EVENT_MOUSEOUT});
+    }
+    this.lastMousePosition = position;
+    return this.isPositionInside(position);
+  }
+
+  isPositionInside(position) {
     return position && position.x >= this.x &&
       position.x <= this.x + this.width &&
       position.y >= this.y &&

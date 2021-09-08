@@ -1,5 +1,6 @@
 import BaseObject from "./shared/base-object";
 import {scale, unscale} from "../utils/helpers";
+import {EVENT_MOUSEMOVE, EVENT_MOUSEOUT} from "../utils/variables";
 
 export default class Button extends BaseObject {
   /**
@@ -16,6 +17,15 @@ export default class Button extends BaseObject {
     this.textSize = 10;
     this.backgroundColor = "#000";
     this.textColor = "#fff";
+
+    this.listenerEvent(EVENT_MOUSEMOVE, (data) => {
+      if (this.isPositionInside(data.position)) {
+        document.body.style.cursor = "pointer";
+      }
+    });
+    this.listenerEvent(EVENT_MOUSEOUT, (data) => {
+      document.body.style.cursor = "default";
+    });
   }
 
   /**
