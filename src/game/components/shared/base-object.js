@@ -18,6 +18,7 @@ export default class BaseObject {
     this.width = width;
     this.height = height;
     this.lastMousePosition = null;
+    this.isMouseHover = false;
 
     // toDo guille 27.08.21: improve this random value to be unique
     this.id = Math.random() * 1000000;
@@ -66,7 +67,7 @@ export default class BaseObject {
       this.eventEmitter.emit({event: EVENT_MOUSEOUT});
     }
     this.lastMousePosition = position;
-    return this.isPositionInside(position);
+    return (this.isMouseHover = this.isPositionInside(position));
   }
 
   isPositionInside(position) {

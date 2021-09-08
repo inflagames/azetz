@@ -43,23 +43,16 @@ export default class Modal extends BaseObject {
   }
 
   createCredits(x, y, w, h) {
-    this.buttonCredits = new Button(
-      this.eventEmitter,
-      x, y, w, h,
-      "@ggjnez92"
-    );
+    this.buttonCredits = new Button(this.eventEmitter, x, y, w, h, "@ggjnez92");
     this.buttonCredits.backgroundColor = "#00000000";
     this.buttonCredits.textColor = "#000";
+    this.buttonCredits.textColorHover = "#0048ff";
     this.buttonCredits.listenerEvent(EVENT_CLICK, () =>
       window.open("https://twitter.com/ggjnez92", "_blank").focus());
   }
 
   createShareButton(x, y, w, h) {
-    this.buttonShareRecord = new Button(
-      this.eventEmitter,
-      x, y, w, h,
-      "SHARE ON TWITTER"
-    );
+    this.buttonShareRecord = new Button(this.eventEmitter, x, y, w, h, "SHARE ON TWITTER");
     this.buttonShareRecord.listenerEvent(EVENT_CLICK, () => {
       const message = `I%20just%20make%20a%20new%20record%20of%20${this.score}%20points%20in%20the%20%23azetz%20%23game%20developed%20for%20the%20%40js13kGames%20competition.%0A%0A%23js13k%20%23gamedev%0A%0AIf%20you%20want%20to%20check%20it%20out%2C%20here%20is%20the%20link%20to%20the%20%23github%20repository%0Ahttps%3A%2F%2Fgithub.com%2Finflagames%2Fazetz`;
       const url = `https://twitter.com/intent/tweet?text=${message}`;

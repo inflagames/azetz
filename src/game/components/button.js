@@ -17,6 +17,7 @@ export default class Button extends BaseObject {
     this.textSize = 10;
     this.backgroundColor = "#000";
     this.textColor = "#fff";
+    this.textColorHover = "#9a9a9a";
 
     this.listenerEvent(EVENT_MOUSEMOVE, (data) => {
       if (this.isPositionInside(data.position)) {
@@ -42,7 +43,8 @@ export default class Button extends BaseObject {
     const metrics = context.measureText(this.text);
     const textWidth = unscale(metrics.width);
     const textHeight = unscale(metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
-    context.fillStyle = this.textColor;
+    context.fillStyle = this.isMouseHover ? this.textColorHover : this.textColor;
+    context.text
     context.fillText(
       this.text,
       scale(this.x + this.width / 2 - textWidth / 2),
