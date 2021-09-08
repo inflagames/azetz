@@ -178,6 +178,7 @@ export default class ScenePlay extends Scene {
       modal.buttonPlay.listenerEvent(EVENT_MOUSEUP, () => {
         modal.buttonPlay.destroy.emit();
         modal.buttonShareRecord.destroy.emit();
+        modal.buttonCredits.destroy.emit();
         this.currentGame.unpause();
         this.elements.pop();
         this.isModalShow = false;
