@@ -141,10 +141,13 @@ export default class GameLogic {
    */
   createEnemy(ship) {
     const xPosition = this.getRandomXPosition();
+    const rotation = (Math.PI / 3) * 2 * Math.random() + Math.PI / 6 + Math.PI;
     this.enemies.push({
       x: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
-      rotation: (Math.PI * 3) / 2,
+      rotation,
+      expectedRotation: rotation,
+      velocity: 5,
       component: ship,
     });
   }
@@ -187,6 +190,7 @@ export default class GameLogic {
     this.ship.component.rotation = this.ship.rotation;
 
     this.enemies.forEach((enemy) => {
+      this.moveEnemy(enemy);
       enemy.component.updateCoordinates(
         enemy.x,
         SCREEN_HEIGHT - (enemy.y - this.ship.y)
@@ -206,6 +210,15 @@ export default class GameLogic {
     });
   }
 
+  moveEnemy(enemy) {
+    this.wallCollision(enemy);
+    this.rotate(enemy);
+
+    const movement = rotateVector({x: enemy.velocity, y: 0}, enemy.rotation);
+    enemy.x += movement.x;
+    enemy.y += movement.y;
+  }
+
   moveMeteorite(obj) {
     const velocity = obj.velocity;
     let x = obj.x + (obj.x > obj.expectedX ? -velocity : obj.x < obj.expectedX ? velocity : 0);
@@ -216,10 +229,7 @@ export default class GameLogic {
   }
 
   getRandomXPosition() {
-    return randomNumber(
-      SCREEN_WIDTH - SHIP_PADDING_Y,
-      SHIP_PADDING_Y / 2
-    );
+    return randomNumber(SCREEN_WIDTH - SHIP_PADDING_Y, SHIP_PADDING_Y / 2);
   }
 
   /**
@@ -233,13 +243,14 @@ export default class GameLogic {
 
   moveShip() {
     if (!this.isShipStopped()) {
-      this.wallCollision();
+      if (this.wallCollision(this.ship)) {
+        this.ship.status.push(SHIP_ROTATING);
+      }
       this.ship.component.enableSmoke = true;
 
       this.calculateVelocity();
       this.rotateShip();
-      const distance = this.ship.velocity;
-      const movement = rotateVector({x: distance, y: 0}, this.ship.rotation);
+      const movement = rotateVector({x: this.ship.velocity, y: 0}, this.ship.rotation);
 
       this.ship.x += movement.x;
       this.ship.y += movement.y;
@@ -249,24 +260,24 @@ export default class GameLogic {
   }
 
   rotateShip() {
-    // if (this.shipStatus() === SHIP_ROTATING) {
-      const rotationFactor = ((1000 / FPS) * Math.PI) / TIME_TO_ROTATE_SHIP_MS;
-      if (this.ship.rotation > this.ship.expectedRotation) {
-        this.ship.rotation = Math.max(
-          this.ship.rotation - rotationFactor,
-          this.ship.expectedRotation
-        );
-      } else {
-        this.ship.rotation = Math.min(
-          this.ship.rotation + rotationFactor,
-          this.ship.expectedRotation
-        );
-      }
-      // stop rotation
-      if (this.ship.rotation === this.ship.expectedRotation && this.shipStatus() === SHIP_ROTATING) {
-        this.ship.status.pop();
-      }
-    // }
+    this.rotate(this.ship);
+    // stop rotation
+    if (this.ship.rotation === this.ship.expectedRotation && this.shipStatus() === SHIP_ROTATING) {
+      this.ship.status.pop();
+    }
+  }
+
+  /**
+   * @param obj {{rotation: number, expectedRotation: number}}
+   * @param dir {number}
+   */
+  rotate(obj, dir = 1) {
+    const rotationFactor = ((1000 / FPS) * Math.PI) / TIME_TO_ROTATE_SHIP_MS * dir;
+    if (obj.rotation > obj.expectedRotation) {
+      obj.rotation = Math.max(obj.rotation - rotationFactor, obj.expectedRotation);
+    } else {
+      obj.rotation = Math.min(obj.rotation + rotationFactor, obj.expectedRotation);
+    }
   }
 
   calculateVelocity() {
@@ -310,24 +321,22 @@ export default class GameLogic {
     );
   }
 
-  wallCollision() {
-    // toDo guille 03.09.21: use for any rotation
+  /**
+   * @param obj {{rotation: number, expectedRotation: number, x: number}}
+   * @return {boolean}
+   */
+  wallCollision(obj) {
     if (
-      this.shipStatus() !== SHIP_ROTATING &&
-      this.ship.rotation > Math.PI / 2 &&
-      this.ship.x < MARGIN_TO_COLLIDE
+      (obj.rotation === obj.expectedRotation &&
+        obj.x < MARGIN_TO_COLLIDE) ||
+      (obj.rotation === obj.expectedRotation &&
+        obj.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE)
     ) {
-      this.ship.status.push(SHIP_ROTATING);
-      this.ship.expectedRotation = Math.PI - this.ship.rotation;
+      obj.expectedRotation = Math.PI - obj.rotation;
+      while (obj.expectedRotation < 0) obj.expectedRotation += Math.PI * 2;
+      return true;
     }
-    if (
-      this.shipStatus() !== SHIP_ROTATING &&
-      this.ship.rotation < Math.PI / 2 &&
-      this.ship.x > SCREEN_WIDTH - MARGIN_TO_COLLIDE
-    ) {
-      this.ship.status.push(SHIP_ROTATING);
-      this.ship.expectedRotation = Math.PI - this.ship.rotation;
-    }
+    return false;
   }
 
   shipStatus() {
