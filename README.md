@@ -1,13 +1,11 @@
 # Azetz game
 
 Minimalistic game to participate in the js14kgames contest.
-The game is about a ship that need to fight in the galaxy and survive as mush as possible. 
+The game is about a ship that need to fight in the galaxy and survive as mush as possible.
+
+[![](./files/game-presentation.png)](https://inflagames.github.io/azetz/)
 
 [demo](https://inflagames.github.io/azetz/)
-
-## Resources
-
-- webpack setup (build)
 
 ## Develop mode
 
