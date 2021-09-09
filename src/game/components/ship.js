@@ -35,26 +35,26 @@ export default class Ship extends BaseShape {
   animateSmoke() {
     if (!this.brakedShape && this.enableSmoke) {
       const origins = this.shape.shapes.filter((s) => s.smoke && this.getOpacity(s.background) > 0);
-      const MAX_SMOKE_ITEMS = 20;
+      const MAX_SMOKE_ITEMS = 40;
       const MAX_NEW_SMOKE_PER_ITERATION = 1;
       const SMOKE_VELOCITY = 1;
-      const SMOKE_DELAY_CREATION = .5;
+      const SMOKE_DELAY_CREATION = 0.5;
       const SMOKE_RADIO = 1;
       const SMOKE_POINTS = 6;
       for (const origin of origins) {
         origin.points = origin.points.map((p) => ({x: p.x + origin.vector.x, y: p.y + origin.vector.y}));
-        origin.background = this.reduceOpacity(origin.background, 4);
+        origin.background = this.reduceOpacity(origin.background, 8);
       }
 
       this.animateSmokeInterval++;
       if (this.animateSmokeInterval > SMOKE_DELAY_CREATION) {
         this.animateSmokeInterval = 0;
         for (let i = Math.min(MAX_SMOKE_ITEMS - origins.length, MAX_NEW_SMOKE_PER_ITERATION); i >= 0; i--) {
-          const velocity = SMOKE_VELOCITY * Math.random() + .4;
+          const velocity = SMOKE_VELOCITY;
           const dir = rotateVector({x: -velocity, y: 0}, Math.PI * 3 / 2);
           const angle = Math.PI * 2 / SMOKE_POINTS;
           origins.unshift({
-            background: "#CCCCCC38",
+            background: "#CCCCCC64",
             vector: {x: dir.x, y: dir.y},
             smoke: true,
             points: new Array(SMOKE_POINTS).fill(0)
@@ -63,7 +63,7 @@ export default class Ship extends BaseShape {
         }
       }
       this.shape = {
-        shapes: [...origins, ...this.shape.shapes.filter((s) => !s.smoke)]
+        shapes: [...origins, ...this.shape.shapes.filter((s) => !s.smoke)],
       };
     }
   }

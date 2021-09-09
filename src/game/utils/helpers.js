@@ -1,6 +1,24 @@
 import {SCREEN_WIDTH} from "./variables";
 
 /**
+ * @param maxValue {number}
+ * @param currentValue {number}
+ */
+export function linearFunction(maxValue, currentValue) {
+  const x = (10 * currentValue) / maxValue;
+  return ((x) * maxValue) / 10;
+}
+
+/**
+ * @param maxValue {number}
+ * @param currentValue {number}
+ */
+export function logFunction(maxValue, currentValue) {
+  const x = (9 * currentValue) / maxValue + 1;
+  return Math.log10(x) * maxValue;
+}
+
+/**
  * @param vector {{x: number, y: number}}
  * @param pivot {{x: number, y: number}}
  * @param phi {number}

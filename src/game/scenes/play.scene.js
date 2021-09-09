@@ -114,6 +114,16 @@ export default class ScenePlay extends Scene {
    * @param context {CanvasRenderingContext2D}
    */
   render(context) {
+    if (!this.time) {
+      this.time=0;
+    }
+    this.time++;
+    if(this.time>100) {
+      this.time = 0;
+      console.log('this.playableElements.length', this.playableElements.length);
+      console.log('this.currentGame.ship.length', this.currentGame.enemies.length);
+      console.log('this.currentGame.objects.length', this.currentGame.objects.length);
+    }
     // execute game logic
     this.currentGame.play();
 
@@ -192,20 +202,20 @@ export default class ScenePlay extends Scene {
 
   createEnemyByTime() {
     if (this.createNextObject < this.currentGame.ship.y) {
-      this.createNextObject = this.currentGame.ship.y + randomNumber(250, 50);
+      this.createNextObject = this.currentGame.ship.y +
+        randomNumber(this.currentGame.configs.maxDistanceForMeteorite, this.currentGame.configs.startDistanceForMeteorite);
       this.createMeteorite();
     }
     if (this.createNextShip < this.currentGame.ship.y) {
-      this.createNextShip = this.currentGame.ship.y + randomNumber(100, 200);
+      this.createNextShip = this.currentGame.ship.y +
+        randomNumber(this.currentGame.configs.maxDistanceForShip, this.currentGame.configs.startDistanceForShip);
       this.createEnemy();
     }
   }
 
   createEnemy() {
     const ship = new Ship(this.eventEmitter, 0, -SCREEN_HEIGHT, 30, 35);
-    // toDo guille 30.08.21: improve this
     ship.shape = randomNumber(2) ? shape3 : shape4;
-    ship.rotation = (Math.PI * 3) / 2;
     ship.enableSmoke = true;
     this.playableElements.push(ship);
     this.currentGame.createEnemy(ship);

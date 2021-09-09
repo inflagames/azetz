@@ -37,6 +37,16 @@ export default class GameLogic {
     };
     this.enemies = [];
     this.objects = [];
+
+    this.configs = {
+      maxDistanceForShip: 100,
+      startDistanceForShip: 200,
+      maxDistanceForMeteorite: 250,
+      startDistanceForMeteorite: 50,
+      shipVelocity: 5,
+      meteoriteBaseVelocity: 1.5,
+      meteoriteStartVelocity: 0.7,
+    };
   }
 
   /**
@@ -54,12 +64,18 @@ export default class GameLogic {
       this.updateSpaces();
       this.updateScore();
       this.checkCollision();
+      this.updateGameDifficulty();
     } else if (this.shipStatus() === SHIP_DIE_ANIMATION) {
       this.time++;
       if (this.time > 20) {
         this.ship.status = [SHIP_DIE];
       }
     }
+  }
+
+  updateGameDifficulty() {
+    // toDo guille 09.09.21: update objects creation
+    // toDo guille 09.09.21: update objects velocity
   }
 
   animateComponents() {
@@ -147,7 +163,7 @@ export default class GameLogic {
       y: SCREEN_HEIGHT + this.ship.y + 100,
       rotation,
       expectedRotation: rotation,
-      velocity: 5,
+      velocity: this.configs.shipVelocity,
       component: ship,
     });
   }
@@ -161,7 +177,7 @@ export default class GameLogic {
       x: xPosition,
       expectedX: xPosition,
       y: SCREEN_HEIGHT + this.ship.y + 100,
-      velocity: 1.5 * Math.random() + 0.7,
+      velocity: this.configs.meteoriteBaseVelocity * Math.random() + this.configs.meteoriteStartVelocity,
       rotation: 0,
       component: meteorite,
     });
