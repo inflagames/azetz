@@ -19,6 +19,12 @@ To build the project in production and generate the *game.zip* file, you only ne
 
 > **Note**: the build generate the *./dist* folder and compress automatically the game in the *azetz.zip* file
 
+## Run tests
+
+```
+npm test
+```
+
 ## Author(s)
 
 - [wil92](https://github.com/wil92)
