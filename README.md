@@ -27,3 +27,7 @@ To build the project in production and generate the *game.zip* file, you only ne
 ## Contributions
 
 All contributions are welcome.
+
+## License
+
+[LICENSE](./LICENSE.md)
