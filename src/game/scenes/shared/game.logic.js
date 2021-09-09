@@ -115,7 +115,7 @@ export default class GameLogic {
   }
 
   pause() {
-    if (!this.isFinish()) {
+    if (!this.isFinish() && this.canPauseGame()) {
       this.ship.status.push(SHIP_PAUSE);
     }
   }
@@ -352,7 +352,7 @@ export default class GameLogic {
   }
 
   canPauseGame() {
-    return this.notMathStatus([SHIP_STOP, SHIP_DIE_ANIMATION, SHIP_DIE]);
+    return this.notMathStatus([SHIP_DIE_ANIMATION, SHIP_DIE, SHIP_PAUSE]);
   }
 
   isShipClickable() {
