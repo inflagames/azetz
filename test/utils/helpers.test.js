@@ -1,4 +1,4 @@
-import {detectCollision} from "../../src/game/utils/helpers";
+import {detectCollision, linearFunction, logFunction} from "../../src/game/utils/helpers";
 
 describe("Helpers", () => {
   describe("Collisions", () => {
@@ -48,6 +48,26 @@ describe("Helpers", () => {
 
       expect(detectCollision(shape1, shape2)).toBeFalsy();
       expect(detectCollision(shape2, shape1)).toBeFalsy();
+    });
+  });
+
+  describe("logFunction", () => {
+    it("should get 1", () => {
+      expect(logFunction(1000, 1000)).toEqual(1);
+    });
+
+    it("should get 1 if currentValue bigger than maxValue", () => {
+      expect(logFunction(1000, 1200)).toEqual(1);
+    });
+  });
+
+  describe("linearFunction", () => {
+    it("should get 1", () => {
+      expect(linearFunction(1000, 1000)).toEqual(1);
+    });
+
+    it("should get 1 if currentValue bigger than maxValue", () => {
+      expect(linearFunction(1000, 1200)).toEqual(1);
     });
   });
 });

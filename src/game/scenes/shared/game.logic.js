@@ -1,4 +1,4 @@
-import {detectCollision, randomNumber, rotateVector,} from "../../utils/helpers";
+import {detectCollision, linearFunction, logFunction, randomNumber, rotateVector,} from "../../utils/helpers";
 import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/variables";
 import {SHIP_PADDING_Y} from "../play.scene";
 
@@ -14,6 +14,13 @@ const MAX_VELOCITY = 15;
 const MARGIN_TO_COLLIDE = 50;
 const TIME_TO_ROTATE_SHIP_MS = 400;
 
+const MAX_DISTANCE_FOR_SHIP = 100;
+const START_DISTANCE_FOR_SHIP = 200;
+const MAX_DISTANCE_FOR_METEORITE = 250;
+const START_DISTANCE_FOR_METEORITE = 150;
+const SHIP_VELOCITY = 5;
+const METEORITE_BASE_VELOCITY = 1.5;
+const METEORITE_START_VELOCITY = 0.7;
 
 export default class GameLogic {
   constructor() {
@@ -39,13 +46,13 @@ export default class GameLogic {
     this.objects = [];
 
     this.configs = {
-      maxDistanceForShip: 100,
-      startDistanceForShip: 200,
-      maxDistanceForMeteorite: 250,
-      startDistanceForMeteorite: 50,
-      shipVelocity: 5,
-      meteoriteBaseVelocity: 1.5,
-      meteoriteStartVelocity: 0.7,
+      maxDistanceForShip: MAX_DISTANCE_FOR_SHIP,
+      startDistanceForShip: START_DISTANCE_FOR_SHIP,
+      maxDistanceForMeteorite: MAX_DISTANCE_FOR_METEORITE,
+      startDistanceForMeteorite: START_DISTANCE_FOR_METEORITE,
+      shipVelocity: SHIP_VELOCITY,
+      meteoriteBaseVelocity: METEORITE_BASE_VELOCITY,
+      meteoriteStartVelocity: METEORITE_START_VELOCITY,
     };
   }
 
@@ -74,8 +81,23 @@ export default class GameLogic {
   }
 
   updateGameDifficulty() {
-    // toDo guille 09.09.21: update objects creation
-    // toDo guille 09.09.21: update objects velocity
+    this.configs.maxDistanceForShip = this.calculateScaleValue(MAX_DISTANCE_FOR_SHIP, 50);
+    this.configs.startDistanceForShip = this.calculateScaleValue(START_DISTANCE_FOR_SHIP, 100);
+    this.configs.maxDistanceForMeteorite = this.calculateScaleValue(MAX_DISTANCE_FOR_METEORITE, 150);
+    this.configs.startDistanceForMeteorite = this.calculateScaleValue(START_DISTANCE_FOR_METEORITE, 50);
+    this.configs.shipVelocity = this.calculateScaleValue(SHIP_VELOCITY, 7, 1);
+    this.configs.meteoriteBaseVelocity = this.calculateScaleValue(METEORITE_BASE_VELOCITY, 3, 1);
+    this.configs.meteoriteStartVelocity = this.calculateScaleValue(METEORITE_START_VELOCITY, 2, 1);
+  }
+
+  /**
+   * @param start {number}
+   * @param end {number}
+   * @param sign {number}
+   * @return {number}
+   */
+  calculateScaleValue(start, end, sign = -1) {
+    return start + (Math.abs(start - end) * linearFunction(500, this.getScore()) * sign);
   }
 
   animateComponents() {

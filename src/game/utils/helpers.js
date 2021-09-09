@@ -5,8 +5,7 @@ import {SCREEN_WIDTH} from "./variables";
  * @param currentValue {number}
  */
 export function linearFunction(maxValue, currentValue) {
-  const x = (10 * currentValue) / maxValue;
-  return ((x) * maxValue) / 10;
+  return Math.min(currentValue / maxValue, 1);
 }
 
 /**
@@ -15,7 +14,7 @@ export function linearFunction(maxValue, currentValue) {
  */
 export function logFunction(maxValue, currentValue) {
   const x = (9 * currentValue) / maxValue + 1;
-  return Math.log10(x) * maxValue;
+  return Math.min(Math.log10(x), 1);
 }
 
 /**
