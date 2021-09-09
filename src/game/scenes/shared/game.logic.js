@@ -1,4 +1,4 @@
-import {detectCollision, linearFunction, logFunction, randomNumber, rotateVector,} from "../../utils/helpers";
+import {detectCollision, linearFunction, randomNumber, rotateVector,} from "../../utils/helpers";
 import {FPS, SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/variables";
 import {SHIP_PADDING_Y} from "../play.scene";
 
@@ -54,6 +54,13 @@ export default class GameLogic {
       meteoriteBaseVelocity: METEORITE_BASE_VELOCITY,
       meteoriteStartVelocity: METEORITE_START_VELOCITY,
     };
+  }
+
+  destroy() {
+    this.spaces.forEach(space => space.destroy.emit());
+    this.enemies.forEach(enemy => enemy.component.destroy.emit());
+    this.objects.forEach(obj => obj.component.destroy.emit());
+    this.ship.component.destroy.emit();
   }
 
   /**

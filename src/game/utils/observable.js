@@ -8,7 +8,7 @@ export default class Observable {
   /**
    * @param data {Object}
    */
-  emit(data= {}) {
+  emit(data = {}) {
     for (let i = 0; i < this.subscriptions.length; i++) {
       this.callFunction(this.subscriptions[i], data);
     }

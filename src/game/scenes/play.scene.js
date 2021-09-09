@@ -65,6 +65,9 @@ export default class ScenePlay extends Scene {
     this.isModalShow = false;
 
     // game logic
+    if (this.currentGame) {
+      this.currentGame.destroy();
+    }
     this.currentGame = new GameLogic();
 
     // space background
