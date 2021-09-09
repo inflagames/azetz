@@ -13,7 +13,8 @@ delFile ${GAME_ZIP_FILE_NAME}
 delFile "dist/.gitkeep"
 ls dist | grep -P ".*map$" | xargs bash -c 'for arg; do delFile "dist/$arg"; done' _
 
-zip -r -9 $GAME_ZIP_FILE_NAME dist
+cd dist && zip -r -9 $GAME_ZIP_FILE_NAME *
+cd .. && mv dist/$GAME_ZIP_FILE_NAME ./$GAME_ZIP_FILE_NAME
 
 FILE_SIZE_BYTE=$(du -b azetz.zip | cut -f1)
 FILE_SIZE=$((FILE_SIZE_BYTE / 1024))
